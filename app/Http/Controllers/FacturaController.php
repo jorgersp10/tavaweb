@@ -143,7 +143,6 @@ class FacturaController extends Controller
         ->select('e.id as id','e.nombre','e.ruc','e.direccion')
         ->orderBy('e.id','asc')
         ->get();
-        //dd($nro_factura);
 
         return view('factura.create',["clientes"=>$clientes,"productos"=>$productos,
         "nro_factura"=>$nro_factura,"empresas"=>$empresas]);
