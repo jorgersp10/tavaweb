@@ -1,5 +1,6 @@
 @extends('layouts.master')
-@section('title') Libro IVA Ventas Ley 125/91 - Contribuyente: {{$empresa}} - 
+
+@section('title') Libro IVA Compras Ley 125/91 - Contribuyente: {{$empresa}} - 
     Periodo: 
     @if($date1 == "No Determinado" || $date2 == "No Determinado")
         "No Determinado"
@@ -22,7 +23,7 @@
 @section('content')
 @component('components.breadcrumb')
         @slot('li_1') INICIO @endslot
-        @slot('title') Libro Iva Ventas    @endslot
+        @slot('title') Libro Iva Compras    @endslot
     @endcomponent
     <main class="main">
             <!-- Breadcrumb -->
@@ -31,7 +32,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="form-group row">                  
-                            <form id="fecha_comp" action="{{route('informeLibroVenta')}}" method="POST"> 
+                            <form id="fecha_comp" action="{{route('informeLibroCompra')}}" method="POST"> 
                                 {{csrf_field()}}      
                                 <h4>Rango de fecha</h4><br/>                      
                                 <label class="col-md-3 form-control-label" for="loteamiento">Seleccione Fechas</label>
@@ -67,7 +68,7 @@
                             </form>                         
                         <div>
                         @if($fac != "VACIO")
-                            <h3>Libro IVA Ventas Ley 125/91</h3>
+                            <h3>Libro IVA Compras Ley 125/91</h3>
                             <h4>Contribuyente: {{$empresa}}</h4>
                             @if($date1 == "No Determinado" || $date2 == "No Determinado")
                                 <h4>Periodio: No determinado</h4>
@@ -109,10 +110,10 @@
                                             <tr>  
                                                 <td>{{ date('d-m-Y', strtotime($c->fecha)) }}</td>   
                                                 <td>{{$c->tipo_com}}</td> 
-                                                <td>{{$c->fact_nro}}</td>  
+                                                <td>{{$c->fact_compra}}</td>  
                                                 <td>{{$c->timbrado}}</td>
                                                 <td>{{$c->nombre}}</td>
-                                                <td>{{$c->num_documento}}</td>
+                                                <td>{{$c->ruc}}</td>
                                                 <td>{{number_format(($c->grabado10), 2, ",", ".")}}</td>
                                                 <td>{{number_format(($c->grabado5), 2, ",", ".")}}</td>
                                                 <td>{{number_format(($c->iva10), 2, ",", ".")}}</td>

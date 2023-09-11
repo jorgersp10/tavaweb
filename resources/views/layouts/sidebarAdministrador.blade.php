@@ -204,6 +204,12 @@
                                 {{csrf_field()}} 
                             </form> 
                         </li>
+                        <li><a class="waves-effect"  href="{{url('informeLibroCompra')}}" onclick="event.preventDefault(); document.getElementById('informeLibroCompra-form').submit();">
+                            <span>Libro IVA Compras</span></a>
+                            <form id="informeLibroCompra-form" action="{{url('informeLibroCompra')}}" method="GET" style="display: none;">
+                                {{csrf_field()}} 
+                            </form> 
+                        </li>
                         <li><a class="waves-effect"  href="{{url('reporteDetalle')}}" onclick="event.preventDefault(); document.getElementById('reporteDetalle-form').submit();">    
                             <span>Reporte por Detalle</span></a>
                             <form id="reporteDetalle-form" action="{{url('reporteDetalle')}}" method="GET" style="display: none;">
