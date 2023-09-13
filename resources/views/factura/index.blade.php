@@ -133,7 +133,7 @@
                                                 @endif
                                                 <td>{{$ven->nombre}}</td>
                                                 <td>Gs. {{number_format(($ven->total), 0, ",", ".")}}</td>
-                                                <td>Gs. {{number_format(($ven->total/11), 0, ",", ".")}}</td>
+                                                <td>Gs. {{number_format(($ven->ivaTotal), 0, ",", ".")}}</td>
                                                 <td>                                      
                                                     @if($ven->estado==0)
                                                         <button type="button" class="btn btn-primary btn-sm" >

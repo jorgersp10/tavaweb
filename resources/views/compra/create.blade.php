@@ -344,7 +344,7 @@
                     iva_aux[cont] = iva;
 
                }
-               if(iva == 20)
+               if(iva == 21)
                {
                     console.log("entro 5");
                     iva_linea[cont]= Math.round(subtotal[cont] / iva);
@@ -498,7 +498,7 @@
 
            
 
-           if(iva_aux[index]==20)
+           if(iva_aux[index]==21)
            {
                 total_iva5=(total_iva5) - iva_linea[index];
                 $("#total_iva_5_html").html("Gs." + total_iva5);
