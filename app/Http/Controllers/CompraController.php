@@ -361,10 +361,10 @@ class CompraController extends Controller
         ->join('compras_det as cdet','c.id','=','cdet.compra_id')
         ->join('proveedores as p','p.id','=','c.proveedor_id')
         ->join('users as u','u.id','=','c.user_id')
-        ->select('c.id','c.fact_compra','c.iva','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
+        ->select('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
         ->where('c.id','=',$id)
         ->orderBy('c.id','desc')
-        ->groupBy('c.id','c.fact_compra','c.iva','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
+        ->groupBy('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
         ->first();
 
         $pagos=DB::table('pagos_compra as pc')
