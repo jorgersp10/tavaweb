@@ -257,6 +257,18 @@
                                 <input type="date" id="fecha1" name="fecha1" class="form-control">
                             </div>
                         </div>
+                        <div class="row mb-2">
+                            <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Cajero</label>
+                            <div class="col-sm-4">
+                                <select class="form-control" name="cajero_id" id="cajero_id">                                     
+                                    <option value="0">TODOS</option>                            
+                                    @foreach($cajeros as $ban)
+                                        <option value="{{$ban->id}}">{{$ban->name}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+                       
                         <div>
                             <button type="submit" class="btn btn-danger float-left"><i class="fa fa-file fa-1x"></i> Generar PDF</button>
                         </div>

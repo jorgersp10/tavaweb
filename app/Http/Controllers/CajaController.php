@@ -929,20 +929,41 @@ class CajaController extends Controller
             ->where('cdet.fec_vto','=',$fechaahora)
             ->orderby('c.factura','desc')
             ->get();
+
+            $cajeros=DB::table('cajeros as c')
+            ->join('users','users.id','=','c.user_id')
+            ->join('roles','roles.id','=','users.idrol')
+            ->select('users.id as id','users.name')
+            ->orderBy('users.name','asc')
+            ->get();
         //dd( $cuotas_pagar);
         return view('caja.arqueo',["arqueo"=>$arqueo,"arqueoTarde"=>$arqueoTarde,"fechaahora"=>$fechaahora,
-            "cajeroNombre"=>$cajeroNombre,"cuotas_pagar"=>$cuotas_pagar]);
+            "cajeroNombre"=>$cajeroNombre,"cuotas_pagar"=>$cuotas_pagar,"cajeros"=>$cajeros]);
         
     }
 
-     public function arqueo_dias(Request $request)
+    public function arqueo_dias(Request $request)
     {
-        $fecha_arqueo= $request->fecha1;
-        $cajero=auth()->user()->id;
-
-        $cajeroNom = User::findOrFail($cajero);
-        $cajeroNombre = $cajeroNom->name;
-
+        //dd($request);
+        if($request->fecha1 == null)
+        {
+            $fecha_arqueo= Carbon::now();
+        }
+        else
+        {
+            $fecha_arqueo= $request->fecha1;
+        }
+        if($request->cajero_id == 0)
+        {
+            $cajeroNombre = "TODOS";
+        }
+        else
+        {
+            $cajero=$request->cajero_id;
+            $cajeroNom = User::findOrFail($cajero);
+            $cajeroNombre = $cajeroNom->name;
+        }        
+        //dd($cajeroNombre);
         // VERIFICAR PARA QUE EL ADMIN PUEDA VER TODO
         if((auth()->user()->idrol)==1)
         {
@@ -953,15 +974,20 @@ class CajaController extends Controller
             ->join('users as u','u.id','=','p.usuario_id')
             ->select('cli.nombre as cliente','v.fact_nro as producto','p.cuota as cuota',
             'p.total_pag as importe','p.total_pagf','p.total_pagch',
-            'p.total_pagtd','p.total_pagtc','p.total_pagtr','p.fec_pag as fechapago')
-            ->where('p.fec_pag','=',$fecha_arqueo)
-            //->where('p.usuario_id','=',$cajero)
+            'p.total_pagtd','p.total_pagtc','p.total_pagtr','p.fec_pag as fechapago');
+            if($request->cajero_id > 0)
+            {
+                $arqueo=$arqueo->where('p.usuario_id','=',$cajero);
+            }
+            $arqueo=$arqueo->where('p.fec_pag','=',$fecha_arqueo)
+            //
             ->get();
             //dd($arqueo);
             if($arqueo->isEmpty()){
                 $arqueo="Vacio";
             }
-            return view('caja.arqueo_dias',["arqueo"=>$arqueo,"fecha_arqueo"=>$fecha_arqueo,"cajeroNombre"=>$cajeroNombre]);
+            return view('caja.arqueo_dias',["arqueo"=>$arqueo,"fecha_arqueo"=>$fecha_arqueo,
+            "cajeroNombre"=>$cajeroNombre]);
         }
 
         else
@@ -973,9 +999,13 @@ class CajaController extends Controller
             ->join('users as u','u.id','=','p.usuario_id')
             ->select('cli.nombre as cliente','v.fact_nro as producto','p.cuota as cuota',
             'p.total_pag as importe','p.total_pagf','p.total_pagch',
-            'p.total_pagtd','p.total_pagtc','p.total_pagtr','p.fec_pag as fechapago')
-            ->where('p.fec_pag','=',$fecha_arqueo)
-            //->where('p.usuario_id','=',$cajero)
+            'p.total_pagtd','p.total_pagtc','p.total_pagtr','p.fec_pag as fechapago');
+            if($request->cajero_id > 0)
+            {
+                $arqueo=$arqueo->where('p.usuario_id','=',$cajero);
+            }
+            $arqueo=$arqueo->where('p.fec_pag','=',$fecha_arqueo)
+            //
             ->get();
             //dd($arqueo);
             if($arqueo->isEmpty()){
