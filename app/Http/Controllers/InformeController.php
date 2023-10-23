@@ -862,6 +862,7 @@ class InformeController extends Controller
         $empresa = "No Determinada";
         $date1 = "No Determinado";
         $date2 = "No Determinado";
+        $ruc = "No Determinado";
         $bandera = 1;
         if($request->bandera == 1)
         {
@@ -901,6 +902,9 @@ class InformeController extends Controller
 
                 $empresa = Empresa::findOrfail($empresa_id);
                 $empresa = $empresa->nombre;
+
+                $ruc = Empresa::findOrfail($empresa_id);
+                $ruc = $ruc->ruc;
             }
             else
             {
@@ -946,13 +950,13 @@ class InformeController extends Controller
             }
             //dd($fac);
             return view('informe.informeLibroVenta',["fac"=>$fac,"empresas"=>$empresas,"bandera"=>$bandera,
-            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa]);
+            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa,"ruc"=>$ruc]);
         }
         else
         {
             $fac = "VACIO";
             return view('informe.informeLibroVenta',["fac"=>$fac,"empresas"=>$empresas,"bandera"=>$bandera,
-            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa]);
+            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa,"ruc"=>$ruc]);
 
         }
     }
@@ -967,6 +971,7 @@ class InformeController extends Controller
         $empresa = "No Determinada";
         $date1 = "No Determinado";
         $date2 = "No Determinado";
+        $ruc = "No Determinado";
         $bandera = 1;
         if($request->bandera == 1)
         {
@@ -1006,6 +1011,9 @@ class InformeController extends Controller
 
                 $empresa = Empresa::findOrfail($empresa_id);
                 $empresa = $empresa->nombre;
+
+                $ruc = Empresa::findOrfail($empresa_id);
+                $ruc = $ruc->ruc;
             }
             else
             {
@@ -1052,13 +1060,13 @@ class InformeController extends Controller
             }
             //dd($fac);
             return view('informe.informeLibroCompra',["fac"=>$fac,"empresas"=>$empresas,"bandera"=>$bandera,
-            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa]);
+            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa,"ruc"=>$ruc]);
         }
         else
         {
             $fac = "VACIO";
             return view('informe.informeLibroCompra',["fac"=>$fac,"empresas"=>$empresas,"bandera"=>$bandera,
-            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa]);
+            "date1"=>$date1,"date2"=>$date2,"empresa"=>$empresa,"ruc"=>$ruc]);
 
         }
     }

@@ -1,5 +1,5 @@
 @extends('layouts.master')
-@section('title') Libro IVA Ventas Ley 125/91 - Contribuyente: {{$empresa}} - 
+@section('title') Libro IVA Ventas Ley 125/91 - Contribuyente: {{$empresa}} - RUC: {{$ruc}} -
     Periodo: 
     @if($date1 == "No Determinado" || $date2 == "No Determinado")
         "No Determinado"
@@ -68,7 +68,7 @@
                         <div>
                         @if($fac != "VACIO")
                             <h3>Libro IVA Ventas Ley 125/91</h3>
-                            <h4>Contribuyente: {{$empresa}}</h4>
+                            <h4>Contribuyente: {{$empresa}} - RUC: {{$ruc}}</h4>
                             @if($date1 == "No Determinado" || $date2 == "No Determinado")
                                 <h4>Periodio: No determinado</h4>
                             @else
