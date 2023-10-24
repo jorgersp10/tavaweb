@@ -82,8 +82,8 @@
                                             <tr>
                                                 <th data-priority="1">Fecha</th>
                                                 <th data-priority="1">Documento</th>
-                                                <th data-priority="1">Numero</th>
                                                 <th data-priority="1">Timbrado</th>
+                                                <th data-priority="1">Vencimiento</th>
                                                 <th data-priority="1">Razón Social</th>
                                                 <th data-priority="1">Ruc</th>
                                                 <th data-priority="1">Gravada 10%</th>
@@ -95,6 +95,8 @@
                                                 <th data-priority="1">Mon</th>
                                                 <th data-priority="1">Condicion</th>
                                                 <th data-priority="1">Cuotas</th>
+                                                <th data-priority="1">Tipo</th>
+                                                <th data-priority="1">Observacion</th>
                                             </tr>
                                         </thead>
                                         @php 
@@ -109,20 +111,22 @@
                                             @foreach($fac as $c)
                                             <tr>  
                                                 <td>{{ date('d-m-Y', strtotime($c->fecha)) }}</td>   
-                                                <td>{{$c->tipo_com}}</td> 
-                                                <td>{{$c->fact_compra}}</td>  
-                                                <td>{{$c->timbrado}}</td>
+                                                <td>{{$c->fact_compra}}</td> 
+                                                <td>{{$c->timbrado}}</td>  
+                                                <td>{{ date('d-m-Y', strtotime($c->fecha_timbrado)) }}</td>
                                                 <td>{{$c->nombre}}</td>
                                                 <td>{{$c->ruc}}</td>
-                                                <td>{{number_format(($c->grabado10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->grabado5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->iva10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->iva5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->total_exe), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->total), 2, ",", ".")}}</td>
+                                                <td>{{$c->grabado10}}</td>
+                                                <td>{{$c->grabado5}}</td>
+                                                <td>{{number_format(($c->iva10), 0, "", "")}}</td>
+                                                <td>{{number_format(($c->iva5), 0, "", "")}}</td>
+                                                <td>{{$c->total_exe}}</td>
+                                                <td>{{number_format(($c->total), 0, "", "")}}</td>
                                                 <td>{{$c->moneda}}</td>
                                                 <td>{{$c->condicion}}</td>
                                                 <td>1</td>
+                                                <td>{{$c->tipo_com}}</td>
+                                                <td>{{$c->observacion}}</td>
                                             
                                                 @php 
                                                     $total10 = $total10 + $c->grabado10;
@@ -141,12 +145,14 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td>{{number_format(($total10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_iva10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_iva5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_exenta), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_gral), 2, ",", ".")}}</td>
+                                                <td>{{$total10}}</td>
+                                                <td>{{$total5}}</td>
+                                                <td>{{$total_iva10}}</td>
+                                                <td>{{$total_iva5}}</td>
+                                                <td>{{$total_exenta}}</td>
+                                                <td>{{$total_gral}}</td>
+                                                <td></td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

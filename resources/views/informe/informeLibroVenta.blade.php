@@ -94,6 +94,7 @@
                                                 <th data-priority="1">Mon</th>
                                                 <th data-priority="1">Condicion</th>
                                                 <th data-priority="1">Cuotas</th>
+                                                <th data-priority="1">Observación</th>
                                             </tr>
                                         </thead>
                                         @php 
@@ -112,16 +113,21 @@
                                                 <td>{{$c->fact_nro}}</td>  
                                                 <td>{{$c->timbrado}}</td>
                                                 <td>{{$c->nombre}}</td>
+                                                @if($c->digito != '')
+                                                <td>{{$c->num_documento}} - {{$c->digito}}</td>
+                                                @else
                                                 <td>{{$c->num_documento}}</td>
-                                                <td>{{number_format(($c->grabado10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->grabado5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->iva10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->iva5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->total_exe), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($c->total), 2, ",", ".")}}</td>
+                                                @endif
+                                                <td>{{$c->grabado10}}</td>
+                                                <td>{{$c->grabado5}}</td>                                                
+                                                <td>{{number_format(($c->iva10), 0, "", "")}}</td>
+                                                <td>{{number_format(($c->iva5), 0, "", "")}}</td>
+                                                <td>{{$c->total_exe}}</td>
+                                                <td>{{number_format(($c->total), 0, "", "")}}</td>
                                                 <td>{{$c->moneda}}</td>
                                                 <td>{{$c->condicion}}</td>
                                                 <td>1</td>
+                                                <td>{{$c->observacion}}</td>
                                             
                                                 @php 
                                                     $total10 = $total10 + $c->grabado10;
@@ -140,12 +146,13 @@
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
-                                                <td>{{number_format(($total10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_iva10), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_iva5), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_exenta), 2, ",", ".")}}</td>
-                                                <td>{{number_format(($total_gral), 2, ",", ".")}}</td>
+                                                <td>{{$total10}}</td>
+                                                <td>{{$total5}}</td>
+                                                <td>{{$total_iva10}}</td>
+                                                <td>{{$total_iva5}}</td>
+                                                <td>{{$total_exenta}}</td>
+                                                <td>{{$total_gral}}</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

@@ -40,13 +40,17 @@
 
                     <div class="form-group row">
                         <label class="col-md-2 form-control-label"><b>Factura N°:</b></label>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <input type="text" id="fact_compra" name="fact_compra" class="form-control" value="{{$compras->fact_compra}}">              
                         </div>
                         <label class="col-md-2 form-control-label"><b>Timbrado N°:</b></label>
-                        <div class="col-md-3">
+                        <div class="col-md-2">
                             <input type="text" id="timbrado" name="timbrado" class="form-control" value="{{$compras->timbrado}}">              
-                        </div>                        
+                        </div>  
+                        <label class="col-md-2 form-control-label"><b>Fecha Timbrado:</b></label>
+                        <div class="col-md-2">
+                            <input type="date" id="fecha_timbrado" name="fecha_timbrado" class="form-control" value="{{$compras->fecha_timbrado}}">              
+                        </div>                      
                     </div><br>
                     <div class="form-group row">
                         <label class="col-md-2 form-control-label"><b>Fecha de Compra:</b></label>

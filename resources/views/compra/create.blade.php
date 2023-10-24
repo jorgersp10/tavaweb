@@ -53,10 +53,19 @@
                                     <input type="text" id="fact_compra" name="fact_compra" class="form-control" placeholder="Ingrese nro de factura" required>
                                 </div>
                             </div>
+                            
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-3">
                                 <label class="col-md-3 form-control-label" for="precio">Timbrado</label>
                                 <div class="mb-3">
                                     <input type="text" id="timbrado" name="timbrado" class="form-control" placeholder="Ingrese nro de timbrado" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <label class="col-md-4 form-control-label" for="cantidad">Fecha Timbrado</label>
+                                <div class="mb-3">
+                                    <input type="date" id="fecha_timbrado" name="fecha_timbrado" class="form-control" required>
                                 </div>
                             </div>
                             <div class="col-md-4">
@@ -79,7 +88,7 @@
                                 </div>
                             </div>
                             <div class="col-md-3">
-                                <label class="col-md-3 form-control-label" for="cantidad">Fecha</label>
+                                <label class="col-md-4 form-control-label" for="cantidad">Fecha Factura</label>
                                 <div class="mb-3">
                                     <input type="date" id="fecha" name="fecha" class="form-control" required>
                                 </div>

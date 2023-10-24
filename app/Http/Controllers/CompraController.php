@@ -144,6 +144,7 @@ class CompraController extends Controller
             $compra->fact_compra = $request->fact_compra;
             $compra->timbrado = $request->timbrado;
             $compra->fecha = isset($request->fecha) ? $request->fecha : $fecha_hoy->toDateString();
+            $compra->fecha_timbrado = isset($request->fecha_timbrado) ? $request->fecha_timbrado : $fecha_hoy->toDateString();
             $compra->empresa_id = $request->empresa_id;
             // $compra->iva = $request->total_iva;
             // $compra->total = $request->total_pagar;
@@ -235,11 +236,11 @@ class CompraController extends Controller
         ->join('proveedores as p','p.id','=','c.proveedor_id')
         ->join('empresas as e','e.id','=','c.empresa_id')
         ->select('c.id as id_compra','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
-        'p.nombre','p.ruc','c.empresa_id','e.nombre as empresa','c.timbrado')
+        'p.nombre','p.ruc','c.empresa_id','e.nombre as empresa','c.timbrado','c.fecha_timbrado')
         ->where('c.id','=',$id)
         ->orderBy('c.id', 'desc')
         ->groupBy('c.id','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
-        'p.nombre','p.ruc','c.empresa_id','e.nombre','c.timbrado')
+        'p.nombre','p.ruc','c.empresa_id','e.nombre','c.timbrado','c.fecha_timbrado')
         ->first();
 
         /*mostrar detalles*/
@@ -486,6 +487,7 @@ class CompraController extends Controller
         $compra->fact_compra = $request->fact_compra;
         $compra->timbrado = $request->timbrado;
         $compra->fecha = $request->fecha;
+        $compra->fecha_timbrado = $request->fecha_timbrado;
         $compra->empresa_id = $request->empresa_id;
         $compra->save();
      

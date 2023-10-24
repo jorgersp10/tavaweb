@@ -876,15 +876,16 @@ class InformeController extends Controller
             ->join('clientes as c','c.id','=','v.cliente_id')
             ->join('empresas as e','e.id','=','v.empresa_id')
             ->select('v.fecha','v.id','v.fact_nro','v.timbrado','v.iva5','v.iva10','v.ivaTotal',
-            'v.exenta','v.total','v.estado','c.nombre','c.num_documento',
+            'v.exenta','v.total','v.estado','c.nombre','c.num_documento','c.digito',
             DB::raw('"FACTURA" as tipo_com'),
             DB::raw('"Gs" as moneda'),
             DB::raw('"Contado" as condicion'),
             DB::raw('0 as grabado10'),
             DB::raw('0 as grabado5'),
-            DB::raw('0 as total_exe'))
+            DB::raw('0 as total_exe'),
+            DB::raw('0 as observacion'))
             ->groupBy('v.fecha','v.id','v.fact_nro','v.timbrado','v.iva5','v.iva10','v.ivaTotal','v.exenta',
-                'v.total','v.estado','c.nombre','c.num_documento');
+                'v.total','v.estado','c.nombre','c.num_documento','c.digito');
             
             if(($date1 != "null") && ($date2 != "null"))
             {
@@ -917,27 +918,41 @@ class InformeController extends Controller
             //DETALLES
             $detalles=DB::table('ventas_det as vdet')
             ->join('ventas as v','v.id','=','vdet.venta_id')
-            ->select('vdet.id','vdet.venta_id','vdet.cantidad','vdet.precio','vdet.tipo_iva')
+            ->join('productos as pr','pr.id','=','vdet.producto_id')
+            ->select('vdet.id','vdet.venta_id','vdet.cantidad','vdet.precio','vdet.tipo_iva',
+            'vdet.servicio','vdet.producto_id','pr.descripcion')
             ->get();
             
             for ($i=0; $i < sizeof($fac); $i++) { 
                 $sub_10 = 0;
                 $sub_5 = 0;
                 $sub_exe = 0;
+                $obs = '';
                 for ($f=0; $f < sizeof($detalles); $f++) { 
                     if($fac[$i]->id == $detalles[$f]->venta_id)
                     {
+                        if($detalles[$f]->producto_id != 1)
+                        {
+                            $obs = $obs .' - '. $detalles[$f]->servicio;
+                            $fac[$i]->observacion =  $obs;
+                        }
+                        else
+                        {
+                            $obs = $obs .' - '. $detalles[$f]->descripcion;
+                            $fac[$i]->observacion =  $obs;
+                        }
+                        
                         if($detalles[$f]->tipo_iva == 11)
                         {
                             $sub = $detalles[$f]->cantidad * $detalles[$f]->precio;
-                            $sub_10 = $sub_10 + $sub;
-                            $fac[$i]->grabado10 =  $sub_10;
+                            $sub_10 = $sub_10 + $sub ;
+                            $fac[$i]->grabado10 =  $sub_10 -$fac[$i]->iva10;
                         }
                         if($detalles[$f]->tipo_iva == 20)
                         {
                             $sub = $detalles[$f]->cantidad * $detalles[$f]->precio;
-                            $sub_5 = $sub_5 + $sub;
-                            $fac[$i]->grabado5 =  $sub_5;
+                            $sub_5 = $sub_5 + $sub ;
+                            $fac[$i]->grabado5 =  $sub_5 -$fac[$i]->iva5;
                         }
                         if($detalles[$f]->tipo_iva == 1)
                         {
@@ -985,15 +1000,16 @@ class InformeController extends Controller
             ->join('proveedores as c','c.id','=','v.proveedor_id')
             ->join('empresas as e','e.id','=','v.empresa_id')
             ->select('v.fecha','v.id','v.fact_compra','v.timbrado','v.iva5','v.iva10','v.ivaTotal',
-            'v.exenta','v.total','v.estado','c.nombre','c.ruc',
+            'v.exenta','v.total','v.estado','c.nombre','c.ruc','v.fecha_timbrado',
             DB::raw('"FACTURA" as tipo_com'),
             DB::raw('"Gs" as moneda'),
             DB::raw('"Contado" as condicion'),
             DB::raw('0 as grabado10'),
             DB::raw('0 as grabado5'),
-            DB::raw('0 as total_exe'))
+            DB::raw('0 as total_exe'),
+            DB::raw('0 as observacion'))
             ->groupBy('v.fecha','v.id','v.fact_compra','v.timbrado','v.iva5','v.iva10','v.ivaTotal','v.exenta',
-                'v.total','v.estado','c.nombre','c.ruc');
+                'v.total','v.estado','c.nombre','c.ruc','v.fecha_timbrado');
             
             if(($date1 != "null") && ($date2 != "null"))
             {
@@ -1027,27 +1043,33 @@ class InformeController extends Controller
             //DETALLES
             $detalles=DB::table('compras_det as vdet')
             ->join('compras as v','v.id','=','vdet.compra_id')
-            ->select('vdet.id','vdet.compra_id','vdet.cantidad','vdet.precio','vdet.tipo_iva','vdet.descuento')
+            ->join('productos as pr','pr.id','=','vdet.producto_id')
+            ->select('vdet.id','vdet.compra_id','vdet.cantidad','vdet.precio','vdet.tipo_iva',
+            'vdet.descuento','pr.descripcion')
             ->get();
             
             for ($i=0; $i < sizeof($fac); $i++) { 
                 $sub_10 = 0;
                 $sub_5 = 0;
                 $sub_exe = 0;
+                $obs = '';
                 for ($f=0; $f < sizeof($detalles); $f++) { 
                     if($fac[$i]->id == $detalles[$f]->compra_id)
                     {
+                        $obs = $obs .' - '. $detalles[$f]->descripcion;
+                        $fac[$i]->observacion =  $obs;
+
                         if($detalles[$f]->tipo_iva == 11)
                         {
                             $sub = ($detalles[$f]->cantidad * $detalles[$f]->precio) -  $detalles[$f]->descuento;
                             $sub_10 = $sub_10 + $sub;
-                            $fac[$i]->grabado10 =  $sub_10;
+                            $fac[$i]->grabado10 =  $sub_10 - $fac[$i]->iva10;
                         }
                         if($detalles[$f]->tipo_iva == 20)
                         {
                             $sub = ($detalles[$f]->cantidad * $detalles[$f]->precio) -  $detalles[$f]->descuento;
                             $sub_5 = $sub_5 + $sub;
-                            $fac[$i]->grabado5 =  $sub_5;
+                            $fac[$i]->grabado5 =  $sub_5 -$fac[$i]->iva5;
                         }
                         if($detalles[$f]->tipo_iva == 1)
                         {
