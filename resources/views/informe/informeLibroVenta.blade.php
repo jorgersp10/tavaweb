@@ -46,21 +46,24 @@
                                     </div>
                                     <input type="hidden" id="bandera" name="bandera" class="form-control" value=1>
 
-                                    <div class="col-sm-3">
-                                        <button type="submit" class="btn btn-primary float-left"><i class="fa fa-file fa-1x"></i> Filtrar</button>
-                                    </div>
+                                    
                                 </div>
                                  <div class="form-group row">
-                                    <div class="row mb-2">
-                                        <label for="horizontal-firstname-input" class="col-sm-4 col-form-label">Empresa</label>
-                                        <div class="col-sm-4">
-                                            <select style= "width:280px" class="form-control" name="empresa_id" id="empresa_id">  
-                                                <option readonly value="0">Seleccionar</option>                
-                                                @foreach($empresas as $s)                                    
-                                                    <option value="{{$s->id}}">{{$s->nombre}}</option>                                        
-                                                @endforeach
-                                            </select>                                
+                                    <div class="col-md-6">
+                                        <div class="row mb-2">
+                                            <label for="horizontal-firstname-input" class="col-md-2 col-form-label">Empresa</label>
+                                            <div class="col-sm-4">
+                                                <select style= "width:280px" class="form-control" name="empresa_id" id="empresa_id">  
+                                                    <option readonly value="0">Seleccionar</option>                
+                                                    @foreach($empresas as $s)                                    
+                                                        <option value="{{$s->id}}">{{$s->nombre}}</option>                                        
+                                                    @endforeach
+                                                </select>                                
+                                            </div>
                                         </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <button type="submit" class="btn btn-primary float-left"><i class="fa fa-file fa-1x"></i> Generar</button>
                                     </div>
                                 </div>
                                 <br> <br>                                    
@@ -85,6 +88,7 @@
                                                 <th data-priority="1">Timbrado</th>
                                                 <th data-priority="1">Razón Social</th>
                                                 <th data-priority="1">Ruc</th>
+                                                <th data-priority="1">DV</th>
                                                 <th data-priority="1">Gravada 10%</th>
                                                 <th data-priority="1">Gravada 5%</th>
                                                 <th data-priority="1">Imp. 10%</th>                                            
@@ -114,10 +118,11 @@
                                                 <td>{{$c->timbrado}}</td>
                                                 <td>{{$c->nombre}}</td>
                                                 @if($c->digito != '')
-                                                <td>{{$c->num_documento}} - {{$c->digito}}</td>
+                                                <td>{{$c->num_documento}}</td>
                                                 @else
                                                 <td>{{$c->num_documento}}</td>
                                                 @endif
+                                                <td>{{$c->digito}}</td>
                                                 <td>{{$c->grabado10}}</td>
                                                 <td>{{$c->grabado5}}</td>                                                
                                                 <td>{{number_format(($c->iva10), 0, "", "")}}</td>
@@ -141,6 +146,7 @@
                                         @endforeach
                                         <tr class="table-dark">       
                                                 <td>Totales</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>

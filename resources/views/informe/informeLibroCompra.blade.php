@@ -86,6 +86,7 @@
                                                 <th data-priority="1">Vencimiento</th>
                                                 <th data-priority="1">Razón Social</th>
                                                 <th data-priority="1">Ruc</th>
+                                                <th data-priority="1">DV</th>
                                                 <th data-priority="1">Gravada 10%</th>
                                                 <th data-priority="1">Gravada 5%</th>
                                                 <th data-priority="1">Imp. 10%</th>                                            
@@ -115,7 +116,8 @@
                                                 <td>{{$c->timbrado}}</td>  
                                                 <td>{{ date('d-m-Y', strtotime($c->fecha_timbrado)) }}</td>
                                                 <td>{{$c->nombre}}</td>
-                                                <td>{{$c->ruc}}</td>
+                                                <td>{{ explode('-', $c->ruc)[0] }}</td>
+                                                <td>{{ strpos($c->ruc, '-') !== false ? explode('-', $c->ruc)[1] : '' }}</td>
                                                 <td>{{$c->grabado10}}</td>
                                                 <td>{{$c->grabado5}}</td>
                                                 <td>{{number_format(($c->iva10), 0, "", "")}}</td>
@@ -140,6 +142,7 @@
                                         @endforeach
                                         <tr class="table-dark">       
                                                 <td>Totales</td>
+                                                <td></td>
                                                 <td></td>
                                                 <td></td>
                                                 <td></td>
