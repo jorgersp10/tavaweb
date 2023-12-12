@@ -34,7 +34,7 @@
                 <label class="col-md-3 form-control-label" for="telefono">Correo</label>
                 <div class="col-md-6">
                   
-                <input type="email" class="form-control" id="email" name="email" placeholder="Ingrese el correo">
+                <input type="text" class="form-control" id="email" name="email" placeholder="Ingrese el correo">
                        
                 </div>
     </div>

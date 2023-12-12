@@ -12,7 +12,7 @@
 @section('content')
 @component('components.breadcrumb')
         @slot('li_1') INICIO @endslot
-        @slot('title') TAVA @endslot
+        @slot('title') LABPROF GROUP @endslot
     @endcomponent
     
 

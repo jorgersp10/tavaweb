@@ -12,7 +12,7 @@
 @section('content')
 @component('components.breadcrumb')
         @slot('li_1') Tables @endslot
-        @slot('title') TAVA - HIERROS @endslot
+        @slot('title') LABPROF GROUP - HIERROS @endslot
     @endcomponent
 <main class="main">
             <!-- Breadcrumb -->

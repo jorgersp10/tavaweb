@@ -86,7 +86,18 @@ class ProveedorController extends Controller
             $proveedor->user_id = auth()->user()->id;
     
             $proveedor->save();
-            return Redirect::to("proveedor")->with('msj2', 'PROVEEDOR REGISTRADO');
+            
+            $desde = $request->desde_factura;
+
+            if($desde == 1)
+            {
+                return Redirect::to("compra/create")->with('msj2', 'PROVEEDOR REGISTRADO');
+            }
+            else
+            {
+                return Redirect::to("proveedor")->with('msj2', 'PROVEEDOR REGISTRADO');
+            }
+            
                 
         }
     }

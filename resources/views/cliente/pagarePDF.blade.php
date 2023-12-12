@@ -162,7 +162,7 @@
 
         <div id="cuerpo">
             <p>
-            PAGAREMOS A LA ORDEN DE TAVA DE ARMANDO GABRIEL GÓMEZ CON C.I. Nº 0000000 La suma de guaraníes,
+            PAGAREMOS A LA ORDEN DE LABPROF GROUP DE ARMANDO GABRIEL GÓMEZ CON C.I. Nº 0000000 La suma de guaraníes,
             <strong>{{$total_pag_let}}</strong>--------------------------<br>
             En <strong>{{$cantCuotas}}</strong> cuotas iguales de Gs. <strong>{{number_format(($montoCuota), 0, ",", ".")}}</strong> todas ellas 
             con vencimiento mensual y consecutivas el {{$diafecha}} de cada mes, las cuales serán abonadas en 

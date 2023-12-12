@@ -214,7 +214,7 @@
     </section>  
   <footer>
     <hr>
-    <p><b>TAVA</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
+    <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
     <p><b>{{date('d-m-Y H:i:s')}}</b></p>
   </footer>
 </html>

@@ -1,7 +1,7 @@
 @php
     $sis_desde="";
     $extension='layouts.master';
-    $tit_desde='TAVA';
+    $tit_desde='LABPROF GROUP';
     $sis_desde=session()->get('sis_desde');
     if ($sis_desde == "electro")
     {

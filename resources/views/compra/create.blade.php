@@ -12,7 +12,7 @@
 @section('content')
 @component('components.breadcrumb')
         @slot('li_1') Tables @endslot
-        @slot('title') TAVA @endslot
+        @slot('title') LABPROF GROUP @endslot
     @endcomponent
 <main class="main">
             <!-- Breadcrumb -->
@@ -34,17 +34,35 @@
                     <div class="card-body">
                         <form id="form_mora" action="{{route('compra.store')}}" method="POST">
                         <div class="form-group row">
+                            <div class="col-sm-3">
+                                <label class="col-md-4 form-control-label" for="precio">Empresa</label>
+                                <select class="form-control" name="empresa_id" id="empresa_id">                                     
+                                    <option value="0" disabled>Seleccione</option>                                    
+                                    @foreach($empresas as $e)
+                                        <option value="{{$e->id}}">{{$e->nombre}}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="col-md-4 form-control-label" for="cantidad">Fecha Factura</label>
+                                <div class="mb-3">
+                                    <input type="date" id="fecha" name="fecha" class="form-control" required>
+                                </div>
+                            </div>                                                      
+                        </div>
+                        <div class="form-group row">
                             <div class="col-md-4">
                                 <label class="col-md-3 form-control-label" for="rol">Proveedor</label>
-
                                 <div class="mb-3">
-
-                                    <select class="form-control" name="proveedor_id" id="proveedor_id" style= "width:300px">
-
+                                    <select class="form-control" name="proveedor_id" id="proveedor_id" style= "width:100%">
                                         <option value="0" disabled>Seleccionar Proveedor</option>
-
                                     </select>
-
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <label class="col-md-6 form-control-label" for="rol">Agregar Proveedor</label>
+                                <div class="mb-3">
+                                    <button type="button" class="btn btn-primary waves-effect waves-light" data-bs-toggle="modal" data-bs-target="#abrirmodalProv">Nuevo</button>
                                 </div>
                             </div>
                             <div class="col-md-3">
@@ -53,8 +71,8 @@
                                     <input type="text" id="fact_compra" name="fact_compra" class="form-control" placeholder="Ingrese nro de factura" required>
                                 </div>
                             </div>
-                            
                         </div>
+                        
                         <div class="form-group row">
                             <div class="col-md-3">
                                 <label class="col-md-3 form-control-label" for="precio">Timbrado</label>
@@ -69,7 +87,7 @@
                                 </div>
                             </div>
                             <div class="col-md-4">
-                                <label class="col-md-5 form-control-label" for="precio">Tildar si tiene valor contable</label>
+                                <label class="col-md-6 form-control-label" for="precio">Tildar si tiene valor contable</label>
                                 <div class="col-sm-3 form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="contable" name="contable">
                                     <label class="form-check-label" for="flexSwitchCheckDefault">Contable</label>
@@ -80,37 +98,20 @@
                             <div class="col-md-5">
                             <label class="col-md-3 form-control-label" for="nombre">Producto</label>
                             <div class="mb-3">
-                                    <select class="form-control" name="producto_id" id="producto_id" onchange="obtenerPrecio()" style= "width:400px">
-
+                                    <select class="form-control" name="producto_id" id="producto_id" onchange="obtenerPrecio()" style= "width:100%">
                                         <option value="0" disabled>Seleccionar Producto</option>
-
                                     </select>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="col-md-4 form-control-label" for="cantidad">Fecha Factura</label>
-                                <div class="mb-3">
-                                    <input type="date" id="fecha" name="fecha" class="form-control" required>
-                                </div>
-                            </div>
-                            <div class="col-sm-3">
-                                <label class="col-md-4 form-control-label" for="precio">Empresa</label>
-                                <select class="form-control" name="empresa_id" id="empresa_id">                                     
-                                    <option value="0" disabled>Seleccione</option>
-                                    
-                                    @foreach($empresas as $e)
-                                        <option value="{{$e->id}}">{{$e->nombre}}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group row">
-                            <div class="col-md-4">
-                                <label class="col-md-3 form-control-label" for="cantidad">Cantidad</label>
+                            <div class="col-md-2">
+                                <label class="col-md-4 form-control-label" for="cantidad">Cantidad</label>
                                 <div class="mb-3">
                                     <input type="number" id="cantidad" name="cantidad" class="form-control" placeholder="Ingrese cantidad">
                                 </div>
                             </div>
+                        </div>
+                        <div class="form-group row">
+                            
                             <div class="col-md-4">
                                 <label class="col-md-3 form-control-label" for="precio">Precio</label>
                                 <div class="mb-3">
@@ -206,6 +207,30 @@
                 </div>
                 <!-- Fin ejemplo de tabla Listado -->
             </div>
+
+              <!--Inicio del modal agregar-->
+              <div class="modal fade" id="abrirmodalProv" tabindex="-1" role="dialog"
+              aria-labelledby="exampleModalScrollableTitle" aria-hidden="true">
+              <div class="modal-dialog modal-lg">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="exampleModalScrollableTitle">Nuevo Proveedor</h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal"
+                              aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <form action="{{route('proveedor.store')}}" method="post" class="form-horizontal">
+                            <input type="text" id="desde_factura" name="desde_factura" value=1 class="form-control">
+                              {{csrf_field()}}
+                              
+                              @include('proveedor.form')
+
+                          </form>                                    
+                      </div>
+                      
+                  </div><!-- /.modal-content -->
+              </div><!-- /.modal-dialog -->
+          </div><!-- /.modal -->
 
 </main>
 

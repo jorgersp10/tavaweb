@@ -16,7 +16,7 @@
     
     @component('components.breadcrumb')
         @slot('li_1') Sistema de Gestión de Cobros @endslot
-        @slot('title') TAVA @endslot
+        @slot('title') LABPROF GROUP @endslot
     @endcomponent
    
     <main class="main">

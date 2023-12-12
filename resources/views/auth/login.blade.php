@@ -33,7 +33,7 @@
 
                                                     <h4 class="mb-3"><i
                                                             class="bx bxs-quote-alt-left text-primary h1 align-middle me-3"></i><span
-                                                            class="text-primary"></span>Bievenidos a TAVA</h4>
+                                                            class="text-primary"></span>Bievenidos a LABPROF GROUP</h4>
 
                                                     <div dir="ltr">
                                                         <div class="owl-carousel owl-theme auth-review-carousel"
@@ -75,7 +75,7 @@
                                             </a>
                                         </div>
                                         <div>
-                                            <h5 class="text-primary">Bienvenido a Tava</h5>
+                                            <h5 class="text-primary">Bienvenido a LABPROF GROUP</h5>
                                             <p class="text-muted">Inicie sesión para continuar</p>
                                         </div>
 
@@ -169,7 +169,7 @@
                                         <p class="mb-0">© <script>
                                                 document.write(new Date().getFullYear())
 
-                                            </script> TAVA <i></i> Todos los derechos Reservados</p>
+                                            </script> LABPROF GROUP <i></i> Todos los derechos Reservados</p>
                                     </div>
                                 </div>
 
