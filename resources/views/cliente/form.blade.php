@@ -58,16 +58,24 @@
                     </div>
     </div> 
     
-
-    <div class="row mb-2">
-                <label class="col-md-3 col-form-label" for="telefono">Telefono</label>
-                <div class="col-md-6">
-                  
-                    <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Ingrese el telefono">
-                       
-                </div>
-    </div>
-
+    <div class="row">
+        <div class="col-md-5">
+            <label class="col-md-3 col-form-label" for="telefono">Telefono</label>
+            <div class="col-md-6">
+            
+                <input type="text" id="telefono" name="telefono" class="form-control" placeholder="Ingrese el telefono">
+                
+            </div>
+        </div>
+        <div class="col-md-5">
+            <label class="col-md-3 col-form-label" for="telefono">WhatsApp</label>
+            <div class="col-md-6">
+            
+                <input type="text" id="whatsapp" name="whatsapp" class="form-control" placeholder="Ingrese el telefono">
+                
+            </div>
+        </div>
+    </div><br>
     <div class="row mb-2">
                 <label class="col-md-3 form-control-label" for="telefono">Correo</label>
                 <div class="col-md-6">

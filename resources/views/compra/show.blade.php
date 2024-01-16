@@ -67,6 +67,34 @@
                                 @endforeach  
                             </select>
                         </div>
+                    </div><br>
+                    <div class="form-group row">
+                        <label class="col-md-2 form-control-label"><b>Tipo Fact.:</b></label>
+                        <div class="col-md-3">
+                                
+                            <select class="form-control" name="tipo_fact" id="tipo_fact">                                                                        
+                                <option disabled>Seleccione</option>
+                                @if($compras->tipo_fact == 1)
+                                <option value="1">CRÉDITO</option>
+                                <option value="0">CONTADO</option>
+                                @else
+                                <option value="0">CONTADO</option>
+                                <option value="1">CRÉDITO</option>
+                                @endif                              
+
+                            </select>
+                        
+                        </div>
+                        <label class="col-md-2 form-control-label"><b>N° Pagos:</b></label>
+                        <div class="col-md-2">
+                            <input type="number" id="cuota" name="cuota" class="form-control" value="{{$compras->cuota}}">              
+                        </div>                      
+                    </div><br>
+                    <div class="row mb-4">
+                        <label for="horizontal-firstname-input" class="col-sm-2 col-form-label"><b>Descripción de Fact.</b></label>
+                        <div class="col-sm-9">
+                            <textarea id="descripcion_fact"  name="descripcion_fact" value="{{$compras->descripcion_fact}}" class="form-control" placeholder="Ingrese descripcion de la factura ..." >{{$compras->descripcion_fact}}</textarea>    
+                        </div>
                     </div>
                     <div class="modal-footer">
                         <button type="submit" class="btn btn-light" data-bs-dismiss="modal">Cerrar</button>
@@ -112,8 +140,13 @@
                         </tr>
 
                         <tr>
+                            <th colspan="4"><p align="right">DESCUENTO:</p></th>
+                            <th><p align="right">Gs. {{number_format(($compras->descuento), 0, ",", ".")}}</p></th>
+                        </tr>
+
+                        <tr>
                             <th  colspan="4"><p align="right">TOTAL PAGAR:</p></th>
-                            <th><p align="right">Gs. {{number_format($compras->total, 0, ",", ".")}}</p></th>
+                            <th><p align="right">Gs. {{number_format($compras->total_pagar, 0, ",", ".")}}</p></th>
                         </tr> 
 
                     </tfoot>
@@ -149,6 +182,8 @@
                                     <thead>                               
                                         <tr>
                                             <th data-priority="1">Fecha</th>
+                                            <th data-priority="1">N° Pago</th>
+                                            <th data-priority="1">N° Recibo</th>
                                             <th data-priority="1">Tot. Pag</th>
                                             <th data-priority="1">Efectivo</th>
                                             <th data-priority="1">Transf</th>
@@ -174,6 +209,14 @@
                                             @foreach($pagos as $ar)
                                                 <tr>                                    
                                                     <td>{{ date('d-m-Y', strtotime($ar->fec_pag)) }}</td>
+                                                    <td>{{($ar->nro_pago) }}</td>
+                                                    <td>                                     
+                                                        <a href="{{URL::action('App\Http\Controllers\CompraController@reciboCompra',$ar->recibo_id)}}" target="_blank">
+                                                                <button type="button" class="btn btn-danger btn-sm" >
+                                                                    <i class="fa fa-print fa-1x"></i> {{($ar->nro_recibo) }}
+                                                                </button>
+                                                            </a>
+                                                        </td> 
                                                     <td>{{number_format(($ar->total_pag), 0, ",", ".")}} </td>  
                                                     <td>{{number_format($ar->total_pagf, 0, ",", ".")}}</td>
                                                     <td>{{number_format($ar->total_pagtr, 0, ",", ".")}}</td>
@@ -192,7 +235,9 @@
                                         @endforeach
                                         <tr class="table-dark">  
      
-                                            <td>Total</td>                                                 
+                                            <td>Total</td>  
+                                            <td></td> 
+                                            <td></td>                                                
                                             <td>Gs. {{number_format(($totaldia), 0, ",", ".")}}</td>  
                                             <td>Gs. {{number_format(($totalefe), 0, ",", ".")}}</td> 
                                             <td>Gs. {{number_format(($totaltran), 0, ",", ".")}}</td> 
@@ -204,7 +249,7 @@
                                     @endif
 
                                     @php
-                                        $saldopago = $compras->total - $totaldia;
+                                        $saldopago = $compras->total_pagar - $totaldia;
                                     @endphp
                                     <tr class="table-dark">  
                                             <td>Saldo a Pagar</td>                                                 

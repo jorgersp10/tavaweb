@@ -17,11 +17,41 @@
     <main class="main">
             <!-- Breadcrumb -->
         <div class="container-fluid">
-                <!-- Ejemplo de tabla Listado -->
-                
+                <!-- Ejemplo de tabla Listado -->               
+               
                 <div class="card">
                     <div class="card-header">
-                       <h2>Reporte de pagos de los clientes</h2><br/>
+                       <h2>Ventas Realizadas por rango de fecha</h2><br/>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <form id="detalle_pdf" action="{{route('reporteVentaPDF')}}" method="POST"target="_blank">
+                                {{csrf_field()}}
+                                <!-- FECHAS DE INICIO Y FIN  -->
+                                <div class="row mb-2">
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Inicio</label>
+                                    <div class="col-sm-4">
+                                        <input type="date" id="fecha1" name="fecha1" class="form-control">
+                                    </div>
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Fin</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="fecha2" name="fecha2" class="form-control">
+                                    </div>
+                                </div>
+                                <!-- SUCURSALES -->
+                                <div>
+                                    <button type="submit" class="btn btn-danger float-left"><i class="fa fa-file fa-1x"></i> Generar PDF</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-header">
+                       <h2>Ventas Cobradas por rango de fecha</h2><br/>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
@@ -78,12 +108,12 @@
 
                 <div class="card">
                     <div class="card-header">
-                       <h2>Ventas por rango de fecha</h2><br/>
+                       <h2>Ventas Pendientes de Cobro por rango de fecha</h2><br/>
                     </div>
                     <div class="card-body">
                         <div class="form-group row">
                             <div class="col-md-12">
-                                <form id="detalle_pdf" action="{{route('reporteVentaPDF')}}" method="POST"target="_blank">
+                                <form id="detalle_pdf" action="{{route('reporteVentaPendientePDF')}}" method="POST"target="_blank">
                                 {{csrf_field()}}
                                 <!-- FECHAS DE INICIO Y FIN  -->
                                 <div class="row mb-2">
@@ -135,6 +165,68 @@
                         </div>
                     </div>
                 </div>
+
+                <div class="card">
+                    <div class="card-header">
+                       <h2>Compras Cobradas por rango de fecha</h2><br/>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <form id="detalle_compra_pdf" action="{{route('reporteCompraCobradaPDF')}}" method="POST"target="_blank">
+                                {{csrf_field()}}
+                                <!-- FECHAS DE INICIO Y FIN  -->
+                                <div class="row mb-2">
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Inicio</label>
+                                    <div class="col-sm-4">
+                                        <input type="date" id="fecha1" name="fecha1" class="form-control">
+                                    </div>
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Fin</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="fecha2" name="fecha2" class="form-control">
+                                    </div>
+                                </div>
+                                <!-- SUCURSALES -->
+                                <div>
+                                    <button type="submit" class="btn btn-danger float-left"><i class="fa fa-file fa-1x"></i> Generar PDF</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <div class="card">
+                    <div class="card-header">
+                       <h2>Compras Pendientes de Pago por rango de fecha</h2><br/>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-group row">
+                            <div class="col-md-12">
+                                <form id="detalle_compra_pdf" action="{{route('reporteCompraPendientePDF')}}" method="POST"target="_blank">
+                                {{csrf_field()}}
+                                <!-- FECHAS DE INICIO Y FIN  -->
+                                <div class="row mb-2">
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Inicio</label>
+                                    <div class="col-sm-4">
+                                        <input type="date" id="fecha1" name="fecha1" class="form-control">
+                                    </div>
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Fin</label>
+                                    <div class="col-sm-3">
+                                        <input type="date" id="fecha2" name="fecha2" class="form-control">
+                                    </div>
+                                </div>
+                                <!-- SUCURSALES -->
+                                <div>
+                                    <button type="submit" class="btn btn-danger float-left"><i class="fa fa-file fa-1x"></i> Generar PDF</button>
+                                </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
 
                 <div class="card">
                     <div class="card-header">

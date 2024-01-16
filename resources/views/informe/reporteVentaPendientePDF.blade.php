@@ -3,10 +3,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte de Productos</title>
-
+    <title>Reporte por Fechas</title>
+    
     <div class="card-body">
-    <style>
+    <style> 
         #datos{
         text-align: left;
         font-size: 11px;
@@ -34,7 +34,7 @@
         }
         footer {
             /* background-color: black; */
-
+            
             LINE-HEIGHT:5px;
             font-size: 9px;
             bottom: 0;
@@ -120,68 +120,91 @@
 		margin: 0;
 		padding: 0;
 	    }
-        #totales{
+        #totales{		
             background-color: rgba(255,255,0,1);
             font-size: 12px;
             font-family: "Times New Roman", Times, serif;
             font-weight: bold;
         }
-        #totales2{
+        #totales2{		
             background-color: #FFFFFF;
             font-size: 11px;
             font-family: "Times New Roman", Times, serif;
         }
         #marco{
-
+		
             page-break-inside: auto;
 	    }
         body {
             margin: 1cm 1cm 1cm;
         }
     </style>
-
+   
     <header>
-        <h2 id="titulo" class="text-center">Productos más vendidos</h2>
+        <h2 id="titulo" class="text-center">Ventas Pendientes por rango de Fecha</h2>   
 
     </header>
-
+ 
     @if(($date1 == null || $date2 == null))
         <h3 >Rango de Fecha: Todas las fechas</h3>
         @else
         <h3>Rango de Fecha: {{ date('d-m-Y', strtotime($date1)) }} al {{ date('d-m-Y', strtotime($date2)) }}</h3>
     @endif
     @if($ventas=="Vacio")
-    <h4 >No posee ventas</h4>
+    <h4 >Cliente no posee cobros</h4>
     @else
     ***************************************************************************
     <section id="marco">
         <div>
-            <table id="letratabla" class="table table-bordered table-striped table-sm">
-                <thead>
-                    <tr>
-                        <th>ArtCode</th>
-                        <th>Producto</th>
-                        <th>Cantidad</th>
+            <table id="letratabla" class="table table-bordered table-striped table-sm">  
+            @php
+                $total_iva=0;
+                $total_venta=0;
+            @endphp
+            
+                <thead>  
+                    <tr> 
+                        <th>Cliente</th>
+                        <th>Fact. Nro</th>
+                        <th>Fecha</th>
+                        <th>Total Iva</th>
+                        <th>Total Factura</th>
                     </tr>
                 </thead>
-            @foreach ($ventas as $com)
-
-                <tbody>
-                    <tr>
-                        <td>{{$com->ArtCode}}</td>
-                        <td>{{$com->descripcion}}</td>
-                        <td>{{$com->total}}</td>
+            @foreach($ventas as $v)
+                <tbody>    
+                    <tr>       
+                        <td>{{$v->nombre}}</td>                             
+                        @if($v->contable == 1)
+                            <td>Fact N°: {{$v->fact_nro}}</td> 
+                        @else
+                            <td>Rec N°: {{$v->nro_recibo}}</td> 
+                        @endif
+                        <td>{{ date('d-m-Y', strtotime($v->fecha)) }}</td>                             
+                        <td>Gs. {{number_format(($v->ivaTotal), 0, ",", ".")}}</td>
+                        <td>Gs. {{number_format(($v->total), 0, ",", ".")}}</td>                                                                     
                     </tr>
+                @php
+                    $total_iva=$total_iva + $v->ivaTotal;
+                    $total_venta=$total_venta + $v->total;
+                @endphp
                 </tbody>
-            @endforeach
+            @endforeach       
+            <tr id="totales">       
+                <td >TOTALES</td>                             
+                <td></td>
+                <td></td>                             
+                <td>Gs. {{number_format(($total_iva), 0, ",", ".")}}</td>
+                <td>Gs. {{number_format(($total_venta), 0, ",", ".")}}</td>                                                                     
+            </tr>   
             </table>
-
+           
         </div>
-    </section>
-    @endif
-<footer>
+    </section>  
+    @endif 
+  <footer>
     <hr>
     <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
     <p><b>{{date('d-m-Y H:i:s')}}</b></p>
-</footer>
+  </footer>
 </html>

@@ -454,6 +454,7 @@ class FacturaController extends Controller
     public function obtenerPrecio(Request $request)
         {
             $precio = DB::select('select * from productos where id = ?', [$request->producto_id]);
+            //$tipo_producto = DB::select('select * from productos where id = ?', [$request->producto_id]);
             return response()->json(['var'=>$precio]);
         }
 

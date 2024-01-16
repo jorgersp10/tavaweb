@@ -12,6 +12,7 @@ use App\Models\Factura;
 use App\Models\Compra_det;
 use App\Models\User;
 use App\Models\Empresa;
+use App\Models\Recibo_ParamCompra;
 use Illuminate\Support\Facades\Redirect;
 use Illuminate\Support\Facades\Storage;
 use Carbon\Carbon;
@@ -152,7 +153,19 @@ class CompraController extends Controller
             $compra->iva10 = $request->total_iva_10;
             $compra->ivaTotal = $request->total_iva;
             $compra->exenta = $request->total_exenta;
-            $compra->total = $request->total_pagar;
+            $compra->total = $request->total;
+            $compra->total_pagar = $request->total_pagar;
+            $compra->descuento = $request->total_entrega;
+            $compra->descripcion_fact = $request->descripcion_fact;
+            $compra->tipo_fact = $request->tipo_fact;
+            if($request->tipo_fact == "1")
+            {
+                $compra->cuota = $request->cuota;
+            }
+            else
+            {
+                $compra->cuota = 0;
+            }
             $compra->estado = 0;
             $compra->estado_pago = "P";
             $compra->user_id = auth()->user()->id;
@@ -236,11 +249,13 @@ class CompraController extends Controller
         ->join('proveedores as p','p.id','=','c.proveedor_id')
         ->join('empresas as e','e.id','=','c.empresa_id')
         ->select('c.id as id_compra','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
-        'p.nombre','p.ruc','c.empresa_id','e.nombre as empresa','c.timbrado','c.fecha_timbrado')
+        'p.nombre','p.ruc','c.empresa_id','e.nombre as empresa','c.timbrado','c.fecha_timbrado','c.descripcion_fact',
+        'c.tipo_fact','c.cuota','c.total_pagar','c.descuento')
         ->where('c.id','=',$id)
         ->orderBy('c.id', 'desc')
         ->groupBy('c.id','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
-        'p.nombre','p.ruc','c.empresa_id','e.nombre','c.timbrado','c.fecha_timbrado')
+        'p.nombre','p.ruc','c.empresa_id','e.nombre','c.timbrado','c.fecha_timbrado','c.descripcion_fact',
+        'c.tipo_fact','c.cuota','c.total_pagar','c.descuento')
         ->first();
 
         /*mostrar detalles*/
@@ -253,7 +268,7 @@ class CompraController extends Controller
         $pagos=DB::table('pagos_compra as pc')
         //->join('compras as c','c.id','=','pc.factura_id')
         ->select('pc.factura_id','pc.total_pag','pc.total_pagf','pc.total_pagtr','pc.total_pagch'
-        ,'pc.total_pagtd','pc.total_pagtc','pc.fec_pag')
+        ,'pc.total_pagtd','pc.total_pagtc','pc.fec_pag','pc.nro_pago','nro_recibo','pc.id as recibo_id')
         ->where('pc.factura_id','=',$id)
         ->orderBy('pc.id','asc')
         ->get();
@@ -362,10 +377,12 @@ class CompraController extends Controller
         ->join('compras_det as cdet','c.id','=','cdet.compra_id')
         ->join('proveedores as p','p.id','=','c.proveedor_id')
         ->join('users as u','u.id','=','c.user_id')
-        ->select('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
+        ->select('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total_pagar as total',
+        'c.estado','p.nombre','c.estado_pago')
         ->where('c.id','=',$id)
         ->orderBy('c.id','desc')
-        ->groupBy('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total','c.estado','p.nombre','c.estado_pago')
+        ->groupBy('c.id','c.fact_compra','c.iva5','c.iva10','c.ivaTotal','c.fecha','c.total_pagar',
+        'c.estado','p.nombre','c.estado_pago')
         ->first();
 
         $pagos=DB::table('pagos_compra as pc')
@@ -373,12 +390,21 @@ class CompraController extends Controller
         ->select('pc.id','c.fact_compra','c.fecha','c.total','c.estado','c.estado_pago',
          DB::raw('sum(total_pag) as capital_pagado'))
         ->where('pc.factura_id','=',$id)
-        ->orderBy('pc.id','desc')
         ->groupBy('pc.id','c.fact_compra','c.fecha','c.total','c.estado','c.estado_pago')
         ->get();
-        //dd($pagos[0]->capital_pagado);
+
+        $total_pagado=DB::table('pagos_compra as pc')
+        ->join('compras as c','c.id','=','pc.factura_id')
+        ->select(DB::raw('sum(total_pag) as capital_pagado'))
+        ->where('pc.factura_id','=',$id)
+        ->first();
+
+        // for ($i=0; $i < sizeof($pagos); $i++) { 
+        //     $total_pagado = $pagos[$i]->capital_pagado;
+        // }
+        //dd($total_pagado->capital_pagado);
         if($pagos->isNotEmpty()){
-            $saldo_pagar=$compras->total - $pagos[0]->capital_pagado;
+            $saldo_pagar=$compras->total - $total_pagado->capital_pagado;
             //dd($saldo_pagar);
             return view('compra.pagarFactura',['id' => $id,'bancos' => $bancos,'compras' => $compras,
         'saldo_pagar'=>$saldo_pagar,'cuentas'=>$cuentas]);
@@ -404,6 +430,18 @@ class CompraController extends Controller
                 $pago_compra= new Pago_compra();
                 $pago_compra->factura_id=$request->id_factura;
 
+                $cantidad_pagos = DB::table('pagos_compra as pc')
+                ->where('pc.factura_id', '=', $request->id_factura)
+                ->count();
+                $pago_compra->nro_pago = $cantidad_pagos + 1;
+                //dd($pago_compra->nro_pago);
+                $ids = DB::select('select nro_recibo from recibos_paramcompra where id= ?',[1]);
+                $tran_rec= Recibo_ParamCompra::findOrFail(1);
+                $tran_rec->nro_recibo=$tran_rec->nro_recibo+1;
+                $nrorec=$tran_rec->nro_recibo;
+                $tran_rec->update();
+
+                $pago_compra->nro_recibo=$nrorec;
                 //$ingreso=strval($request->total_pagadof+$request->total_pagadoch+$request->total_pagadotc+$request->total_pagadotd+$request->total_pagadotr);
 
                 if($request->total_pagadof == null)
@@ -489,9 +527,86 @@ class CompraController extends Controller
         $compra->fecha = $request->fecha;
         $compra->fecha_timbrado = $request->fecha_timbrado;
         $compra->empresa_id = $request->empresa_id;
+        $compra->tipo_fact = $request->tipo_fact;
+        if($request->tipo_fact == "1")
+            {
+                $compra->cuota = $request->cuota;
+            }
+            else
+            {
+                $compra->cuota = 0;
+            }
+        $compra->descripcion_fact = $request->descripcion_fact;
         $compra->save();
      
         return Redirect::to('compra')->with('msj2', 'FACTURA ACTUALIZADA');
+    }
+
+    public function reciboCompra($id)
+    {
+        
+        $compras=DB::table('compras as c')
+        ->join('compras_det as cdet','c.id','=','cdet.compra_id')
+        ->join('proveedores as p','p.id','=','c.proveedor_id')
+        ->join('pagos_compra as pc','pc.factura_id','=','c.id')
+        ->select('c.id as id_compra','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
+        'p.nombre','p.ruc','c.empresa_id','c.timbrado','c.fecha_timbrado','c.descripcion_fact','pc.nro_pago','pc.nro_recibo',
+        'c.tipo_fact','c.cuota','p.direccion','p.telefono','c.cuota')
+        ->where('pc.id','=',$id)
+        ->orderBy('c.id', 'desc')
+        ->groupBy('c.id','c.fact_compra','c.fecha','c.total','p.nombre','c.iva5','c.iva10','c.ivaTotal','c.exenta',
+        'p.nombre','p.ruc','c.empresa_id','c.timbrado','c.fecha_timbrado','c.descripcion_fact','pc.nro_pago','pc.nro_recibo',
+        'c.tipo_fact','c.cuota','p.direccion','p.telefono','c.cuota')
+        ->first();
+        //dd($compras);
+        /*mostrar detalles*/
+        $detalles=DB::table('compras_det as cdet')
+        ->join('compras as c','c.id','=','cdet.compra_id')
+        ->join('productos as p','cdet.producto_id','=','p.id')
+        ->select('cdet.cantidad','cdet.precio','p.descripcion as producto','cdet.descuento','c.fact_compra')
+        ->where('cdet.compra_id','=',$id)
+        ->orderBy('cdet.id', 'desc')->get();
+
+        $pagos=DB::table('pagos_compra as pc')
+        ->join('compras as c','c.id','=','pc.factura_id')
+        ->select('pc.id','c.fact_compra','c.fecha','c.total','c.estado','c.estado_pago','c.cuota','pc.nro_pago',
+         DB::raw('sum(total_pag) as capital_pagado'))
+        ->where('pc.id','=',$id)
+        ->groupBy('pc.id','c.fact_compra','c.fecha','c.total','c.estado','c.estado_pago','c.cuota','pc.nro_pago')
+        ->get();
+
+        $pagosDetalle=DB::table('pagos_compra as pc')
+        ->join('compras as c','c.id','=','pc.factura_id')
+        ->select('pc.id','c.fact_compra','c.fecha','c.total','c.estado',
+        'c.estado_pago','c.cuota','pc.nro_pago','pc.total_pagf','pc.total_pagch','pc.total_pagtd','pc.total_pagtc',
+        'pc.total_pagtr')
+        ->where('pc.id','=',$id)
+        ->first();
+        
+        // return view('compra.show',['compras' => $compras,'detalles' =>$detalles,
+        // 'pagos' =>$pagos,'empresa_id' =>$empresa_id,'empresas' =>$empresas]);
+
+        $fechaahora2 = Carbon::parse($compras->fecha);
+        //dd($fechaahora2);
+        //EL DIA DE LA FECHA FORMATEADO CON CARGBON
+        $diafecha = Carbon::parse($compras->fecha)->format('d');
+        //dd($diafecha);
+        $mesLetra = ($fechaahora2->monthName); //y con esta obtengo el mes al fin en espaﾃｱol!
+        //OBTENER EL Aﾃ前
+        $agefecha = Carbon::parse($fechaahora2)->year;
+        //dd($agefecha);
+
+        $tp = $compras->total;
+        //dd($tp);
+       
+        $tot_pag_let=NumerosEnLetras::convertir($tp,'Guaranies',false,'Centavos');
+        
+        //dd($detalles);
+        //return view('factura.facturaPDF',['ventas' => $ventas,'detalles' =>$detalles]);
+        return $pdf= PDF::loadView('compra.reciboCompra',['compras' => $compras,'pagos' =>$pagos,'pagosDetalle' =>$pagosDetalle,
+        'diafecha' =>$diafecha,'mesLetra' =>$mesLetra,'agefecha' =>$agefecha,'tot_pag_let' =>$tot_pag_let])
+         ->setPaper([0, 0, 702.2835, 1150.087], 'portrait')
+         ->stream('FactCompra'.$id.'.pdf');
     }
 
 }

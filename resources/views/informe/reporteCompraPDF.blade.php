@@ -252,7 +252,7 @@
 
     <!-- //PAGO DE SALARIOS -->
      @if($salarios=="Vacio")
-    <h4 >No posee salarios</h4>
+    {{-- <h4 >No posee salarios</h4> --}}
     @else
     <h3 id="titulo" class="text-center">Pago de Salarios</h3>
     ***************************************************************************
@@ -355,7 +355,7 @@
     </section>  
   <footer>
     <hr>
-    <p><b>AyM INOX</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
+    <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
     <p><b>{{date('d-m-Y H:i:s')}}</b></p>
   </footer>
 </html>

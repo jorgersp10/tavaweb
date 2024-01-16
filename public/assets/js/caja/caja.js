@@ -99,7 +99,7 @@ async function renderInmuebles()
                     data-bs-target="#pagarRegistro" 
                     data-id_cuota='${cuota.id}'
                     data-producto='${cuota.factura_id}'>
-                        <i class="fa fa-times fa-1x"></i> Pagar
+                        <i class="fa fa-times fa-1x"></i> Cobrar
                     </button>
                 </td> 
             `;

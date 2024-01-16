@@ -80,9 +80,78 @@ class HomeController extends Controller
             ->get();
 
             //dd($cuotas_pagar);
+            // SECTOR DE SUMA DE COMPRAS Y VENTAS
+
+            $fecha_iva = DB::table('iva_param as i')
+            ->select('i.fecha_ini','i.fecha_fin')
+            ->first();
+
+            //SECTOR DE CONTABLE
+            $ventas_iva = DB::table('ventas as v')
+            ->select(DB::raw('sum(v.total) as total_venta'))
+            ->where('v.estado', '=', "0")
+            ->where('v.fact_nro', '>', "0")
+            ->whereBetween('v.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+            
+            isset($ventas_iva->total_venta) ? $total_venta = $ventas_iva->total_venta : $total_venta = 0;
+           
+            $compras = DB::table('compras as c')
+            ->select(DB::raw('sum(c.total) as total_compra'))
+            ->where('c.estado', '=', "0")
+            ->where('c.contable', '=', "1")
+            ->whereBetween('c.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($compras->total_compra) ? $total_compra = $compras->total_compra : $total_compra = 0;
+
+            $gastos = DB::table('gastos as g')
+            ->select(DB::raw('sum(g.total) as total_gasto'))
+            ->where('g.estado', '=', "0")
+            ->where('g.contable', '=', "1")
+            ->whereBetween('g.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($gastos->total_gasto) ? $total_gasto = $gastos->total_gasto : $total_gasto = 0;
+
+            $total_compra_gasto = $total_compra + $total_gasto;
+            $saldoFactura = $total_compra_gasto - $total_venta;
+
+             //SECTOR DE NO CONTABLE CONTABLE
+            $ventas_siniva = DB::table('ventas as v')
+            ->select(DB::raw('sum(v.total) as total_venta'))
+            ->where('v.estado', '=', "0")
+            ->where('v.fact_nro', '=', "0")
+            ->whereBetween('v.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+            //dd($ventas_siniva);
+            isset($ventas_siniva->total_venta) ? $total_venta_siniva = $ventas_siniva->total_venta : $total_venta_siniva = 0;
+           
+            $compras_siniva = DB::table('compras as c')
+            ->select(DB::raw('sum(c.total) as total_compra'))
+            ->where('c.estado', '=', "0")
+            ->where('c.contable', '=', "0")
+            ->whereBetween('c.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($compras_siniva->total_compra) ? $total_compra_siniva = $compras_siniva->total_compra : $total_compra_siniva = 0;
+
+            $gastos_siniva = DB::table('gastos as g')
+            ->select(DB::raw('sum(g.total) as total_gasto'))
+            ->where('g.estado', '=', "0")
+            ->where('g.contable', '=', "0")
+            ->whereBetween('g.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($gastos_siniva->total_gasto) ? $total_gasto_siniva = $gastos_siniva->total_gasto : $total_gasto_siniva = 0;
+
+            $total_compra_gasto_siniva = $total_compra_siniva + $total_gasto_siniva;
 
             return view($request->path(),["cheques_recibidos"=>$cheques_recibidos,
-            "cheques_emitidos"=>$cheques_emitidos,"cuotas_pagar"=>$cuotas_pagar,"now"=>$now]);
+            "cheques_emitidos"=>$cheques_emitidos,"cuotas_pagar"=>$cuotas_pagar,"now"=>$now,
+            "total_venta"=>$total_venta,
+            "total_compra_gasto"=>$total_compra_gasto,"saldoFactura"=>$saldoFactura,
+            "total_venta_siniva"=>$total_venta_siniva,"total_compra_gasto_siniva"=>$total_compra_gasto_siniva]);
         }
         return abort(404);
     }
@@ -131,8 +200,78 @@ class HomeController extends Controller
             ->get();
             //dd($cuotas_pagar);
 
+            // SECTOR DE SUMA Y RESTA DE COMPRA Y VENTAS
+
+            $fecha_iva = DB::table('iva_param as i')
+            ->select('i.fecha_ini','i.fecha_fin')
+            ->first();
+
+            //SECTOR DE CONTABLE
+            $ventas_iva = DB::table('ventas as v')
+            ->select(DB::raw('sum(v.total) as total_venta'))
+            ->where('v.estado', '=', "0")
+            ->where('v.fact_nro', '>', "0")
+            ->whereBetween('v.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+            
+            isset($ventas_iva->total_venta) ? $total_venta = $ventas_iva->total_venta : $total_venta = 0;
+           
+            $compras = DB::table('compras as c')
+            ->select(DB::raw('sum(c.total) as total_compra'))
+            ->where('c.estado', '=', "0")
+            ->where('c.contable', '=', "1")
+            ->whereBetween('c.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($compras->total_compra) ? $total_compra = $compras->total_compra : $total_compra = 0;
+
+            $gastos = DB::table('gastos as g')
+            ->select(DB::raw('sum(g.total) as total_gasto'))
+            ->where('g.estado', '=', "0")
+            ->where('g.contable', '=', "1")
+            ->whereBetween('g.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($gastos->total_gasto) ? $total_gasto = $gastos->total_gasto : $total_gasto = 0;
+
+            $total_compra_gasto = $total_compra + $total_gasto;
+            $saldoFactura = $total_compra_gasto - $total_venta;
+
+             //SECTOR DE NO CONTABLE CONTABLE
+            $ventas_siniva = DB::table('ventas as v')
+            ->select(DB::raw('sum(v.total) as total_venta'))
+            ->where('v.estado', '=', "0")
+            ->where('v.fact_nro', '=', "0")
+            ->whereBetween('v.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+            //dd($ventas_siniva);
+            isset($ventas_siniva->total_venta) ? $total_venta_siniva = $ventas_siniva->total_venta : $total_venta_siniva = 0;
+           
+            $compras_siniva = DB::table('compras as c')
+            ->select(DB::raw('sum(c.total) as total_compra'))
+            ->where('c.estado', '=', "0")
+            ->where('c.contable', '=', "0")
+            ->whereBetween('c.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($compras_siniva->total_compra) ? $total_compra_siniva = $compras_siniva->total_compra : $total_compra_siniva = 0;
+
+            $gastos_siniva = DB::table('gastos as g')
+            ->select(DB::raw('sum(g.total) as total_gasto'))
+            ->where('g.estado', '=', "0")
+            ->where('g.contable', '=', "0")
+            ->whereBetween('g.fecha', [$fecha_iva->fecha_ini, $fecha_iva->fecha_fin])
+            ->first();
+
+            isset($gastos_siniva->total_gasto) ? $total_gasto_siniva = $gastos_siniva->total_gasto : $total_gasto_siniva = 0;
+
+            $total_compra_gasto_siniva = $total_compra_siniva + $total_gasto_siniva;
+
         return view('index',["cheques_recibidos"=>$cheques_recibidos,
-            "cheques_emitidos"=>$cheques_emitidos,"now"=>$now,"cuotas_pagar"=>$cuotas_pagar]);
+            "cheques_emitidos"=>$cheques_emitidos,"now"=>$now,"cuotas_pagar"=>$cuotas_pagar,
+            "total_venta"=>$total_venta,
+            "total_compra_gasto"=>$total_compra_gasto,"saldoFactura"=>$saldoFactura,
+            "total_venta_siniva"=>$total_venta_siniva,"total_compra_gasto_siniva"=>$total_compra_gasto_siniva]);
     }
 
     /*Language Translation*/

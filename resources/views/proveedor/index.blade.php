@@ -57,7 +57,7 @@
                                             <th  data-priority="1">Editar</th>
                                             <th  data-priority="1">Proveedor</th>
                                             <th  data-priority="1">Ruc</th>
-                                            <th  data-priority="1">Telefono</th>
+                                            <th  data-priority="1">Telefono/WhatsApp</th>
                                             <th  data-priority="1">Email</th>
                                             <th  data-priority="1">Direccion</th>
                                             
@@ -72,7 +72,7 @@
                                             <tr>                  
                                                 <td>
                                                     <button type="button" class="btn btn-info btn-sm" data-id_proveedor="{{$pro->id}}" data-nombre="{{$pro->nombre}}" 
-                                                    data-ruc="{{$pro->ruc}}"data-direccion="{{$pro->direccion}}" data-telefono="{{$pro->telefono}}" 
+                                                    data-ruc="{{$pro->ruc}}"data-direccion="{{$pro->direccion}}" data-telefono="{{$pro->telefono}}" data-whatsapp="{{$pro->whatsapp}}"
                                                     data-email="{{$pro->email}}" data-bs-toggle="modal" data-bs-target="#abrirmodalEditarPro">
                                                     <i class="fa fa-edit fa-1x"></i> Editar
                                                     </button> &nbsp;
@@ -80,7 +80,7 @@
                                                 
                                                 <td>{{$pro->nombre}}</td>
                                                 <td>{{$pro->ruc}}</td>
-                                                <td>{{$pro->telefono}}</td>
+                                                <td>{{$pro->telefono}} / {{$pro->whatsapp}}</td>
                                                 <td>{{$pro->email}}</td>
                                                 <td>{{$pro->direccion}}</td>
                                             </tr>  
@@ -167,6 +167,7 @@
         var ruc_modal_editar = button.data('ruc')
         var direccion_modal_editar = button.data('direccion')
         var telefono_modal_editar = button.data('telefono')
+        var whatsapp_modal_editar = button.data('whatsapp')
         var email_modal_editar = button.data('email')
         var id_proveedor = button.data('id_proveedor')
         var modal = $(this)
@@ -177,6 +178,7 @@
         modal.find('.modal-body #ruc').val(ruc_modal_editar);
         modal.find('.modal-body #direccion').val(direccion_modal_editar);
         modal.find('.modal-body #telefono').val(telefono_modal_editar);
+        modal.find('.modal-body #whatsapp').val(whatsapp_modal_editar);
         modal.find('.modal-body #email').val(email_modal_editar);
         modal.find('.modal-body #id_proveedor').val(id_proveedor);
         // console.log(modal.find('.modal-body #nombre').val(nombrecli_modal_editar));

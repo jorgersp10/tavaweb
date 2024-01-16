@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte por Fechas</title>
+    <title>Ventas Realizadas</title>
     
     <div class="card-body">
     <style> 
@@ -141,7 +141,7 @@
     </style>
    
     <header>
-        <h2 id="titulo" class="text-center">Ventas por rango de Fecha</h2>   
+        <h2 id="titulo" class="text-center">Ventas Realizadas por rango de Fecha</h2>   
 
     </header>
  
@@ -165,7 +165,7 @@
                 <thead>  
                     <tr> 
                         <th>Cliente</th>
-                        <th>Fact. Nro</th>
+                        <th>Fact. / Rec. Nro</th>
                         <th>Fecha</th>
                         <th>Total Iva</th>
                         <th>Total Factura</th>
@@ -175,8 +175,12 @@
                 <tbody>    
                     <tr>       
                         <td>{{$v->nombre}}</td>                             
-                        <td>{{$v->fact_nro}}</td>
-                        <td>{{ date('d-m-Y', strtotime($v->fecha)) }}</td>                             
+                        @if($v->contable == 1)
+                            <td>Fact N°: {{$v->fact_nro}}</td> 
+                        @else
+                            <td>Rec N°: {{$v->nro_recibo}}</td> 
+                        @endif
+            <td>{{ date('d-m-Y', strtotime($v->fecha)) }}</td>                             
                         <td>Gs. {{number_format(($v->ivaTotal), 0, ",", ".")}}</td>
                         <td>Gs. {{number_format(($v->total), 0, ",", ".")}}</td>                                                                     
                     </tr>
@@ -200,7 +204,7 @@
     @endif 
   <footer>
     <hr>
-    <p><b>AyM INOX</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
+    <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
     <p><b>{{date('d-m-Y H:i:s')}}</b></p>
   </footer>
 </html>

@@ -106,7 +106,7 @@
                             </form> 
                         </li> -->
                         <li><a class="waves-effect"  href="{{url('pago')}}" onclick="event.preventDefault(); document.getElementById('pago-form').submit();">    
-                            <span>Pagos</span></a>
+                            <span>Cobros</span></a>
                             <form id="pago-form" action="{{url('pago')}}" method="GET" style="display: none;">
                                 {{csrf_field()}} 
                             </form> 

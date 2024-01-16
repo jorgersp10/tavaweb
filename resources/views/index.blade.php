@@ -28,12 +28,34 @@
                     <h2>Bienvenido</h2><br/>
                 </div>
             </div>
+            <div class="card-body">
+                <div class="form-group row">
+                    @if(auth()->user()->idrol == 1) 
+                    <div class="col-md-4" style="text-align:right;">
+                        <h4>Total Facturado: Gs. {{number_format(($total_venta), 0, ",", ".")}}</h4>
+                        <h4>Total Compras: Gs. {{number_format(($total_compra_gasto), 0, ",", ".")}}</h4>
+                        @if($saldoFactura > 0)
+                            <h4 class="alert alert-success">Saldo: Gs. {{number_format(($saldoFactura), 0, ",", ".")}}</h4>
+                        @else
+                        <h4 class="alert alert-danger">Saldo: Gs. {{number_format(($saldoFactura), 0, ",", ".")}}</h4>
+                        @endif
+                        <input type="hidden" id="saldoFact" name="saldoFact" class="form-control" value="{{$saldoFactura}}">  
+
+                    </div>
+                    <div class="col-md-4" style="text-align:right;">
+                        <h4>Total sin Fact: Gs. {{number_format(($total_venta_siniva), 0, ",", ".")}}</h4>
+                        <h4>Total Compras sin Fac.: Gs. {{number_format(($total_compra_gasto_siniva), 0, ",", ".")}}</h4>
+                        <h4 class="alert alert-success">Total Vendido: Gs. {{number_format(($total_venta_siniva + $total_venta), 0, ",", ".")}}</h4>
+                    </div>
+                    @endif
+                </div>
+            </div>
                 <div class="card-body">
                     <h4>Facturas por cobrar por caja</h4><br/>
                     <div class="table-rep-plugin">
-                        <div id="encabezado" class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap">
-                                <thead>                            
+                        <div class="table-responsive mb-0" data-pattern="priority-columns">
+                            <table id="" class="display table table-bordered dt-responsive  nowrap w-100">                                                                                         
+                                <thead>                           
                                         <tr>                              
                                         <th  data-priority="1">N° Fact</th>
                                         <th  data-priority="1">Cliente</th> 
@@ -63,9 +85,9 @@
                 <div class="card-body">
                     <h4>Totales de Compras y Ventas del Mes</h4><br/>
                     <div class="table-rep-plugin">
-                        <div id="encabezado" class="table-responsive mb-0" data-pattern="priority-columns">
-                            <table id="datatable" class="table table-striped table-bordered dt-responsive nowrap">
-                                <thead>                            
+                        <div class="table-responsive mb-0" data-pattern="priority-columns">
+                            <table id="" class="display table table-bordered dt-responsive  nowrap w-100">                                                                                         
+                                <thead>                             
                                         <tr>                              
                                         <th  data-priority="1">N° Fact</th>
                                         <th  data-priority="1">Cliente</th> 
@@ -98,6 +120,12 @@
 
 @endsection
 @section('script')
+<script>
+    $(document).ready(function () {
+        $('table.display').DataTable();
+         order: [[0, 'desc']]
+    });
+</script>
     <!-- Required datatable js -->
     <script src="{{ URL::asset('/assets/libs/datatables/datatables.min.js') }}"></script>
     <script src="{{ URL::asset('/assets/libs/jszip/jszip.min.js') }}"></script>

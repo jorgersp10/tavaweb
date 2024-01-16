@@ -31,7 +31,7 @@ class ClienteController extends Controller
             $clientes=DB::table('clientes')
             ->select('clientes.fecha_nacimiento','clientes.edad','clientes.id',
             'clientes.nombre','clientes.nombres12','clientes.apellido','clientes.tipo_documento','clientes.num_documento',
-            'clientes.direccion','clientes.telefono','clientes.email',
+            'clientes.direccion','clientes.telefono','clientes.whatsapp','clientes.email',
             'clientes.estado_civil','clientes.digito',
             'clientes.sexo','clientes.user')
             ->where('clientes.nombre','LIKE','%'.$sql.'%')
@@ -83,6 +83,7 @@ class ClienteController extends Controller
             $cliente->num_documento = $request->num_documento;
             $cliente->digito = $request->digito;
             $cliente->telefono = $request->telefono;
+            $cliente->whatsapp = $request->whatsapp;
             $cliente->email = $request->email;
             $cliente->direccion = strtoupper($request->direccion);
             
@@ -124,6 +125,7 @@ class ClienteController extends Controller
         $cliente->num_documento = $request->num_documento;
         $cliente->digito = $request->digito;
         $cliente->telefono = $request->telefono;
+        $cliente->whatsapp = $request->whatsapp;
         $cliente->email = $request->email;
         $cliente->direccion = strtoupper($request->direccion);
         
@@ -152,7 +154,7 @@ class ClienteController extends Controller
 
             //Traemos los datos del cliente
             $client=DB::table('clientes')
-            ->select('edad','estado_civil','sexo','direccion','telefono','nombre as cliente',
+            ->select('edad','estado_civil','sexo','direccion','telefono','whatsapp','nombre as cliente',
             'num_documento as documento','digito','user')
             ->where('id','=',$id)->first();
 

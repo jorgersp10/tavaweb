@@ -62,7 +62,7 @@
                                             @endif
                                             <th  data-priority="1">Cliente</th>
                                             <th  data-priority="1">Documento</th>
-                                            <th  data-priority="1">Telefono</th>
+                                            <th  data-priority="1">Telefono/whatsApp</th>
                                             <th  data-priority="1">Email</th>
                                             <th  data-priority="1">Direccion</th>
                                             <th  data-priority="1">Autor</th> 
@@ -79,7 +79,7 @@
                                                 <td>
                                                     <button type="button" class="btn btn-info btn-sm" data-id_cliente="{{$client->id}}" data-nombre="{{$client->nombre}}" 
                                                         data-tipo_documento="{{$client->tipo_documento}}" data-digito="{{$client->digito}}" data-num_documento="{{$client->num_documento}}" 
-                                                        data-direccion="{{$client->direccion}}" data-telefono="{{$client->telefono}}" 
+                                                        data-direccion="{{$client->direccion}}" data-telefono="{{$client->telefono}}" data-whatsapp="{{$client->whatsapp}}"
                                                         data-email="{{$client->email}}" data-estado_civil="{{$client->estado_civil}}" 
                                                         data-sexo="{{$client->sexo}}" data-edad="{{$client->edad}}" 
                                                         data-fecha_nacimiento="{{$client->fecha_nacimiento}}"  data-bs-toggle="modal" 
@@ -111,7 +111,7 @@
                                                 @endif
                                                 <td>{{$client->nombre}}</td>
                                                 <td>{{$client->tipo_documento}} - {{$client->num_documento}} - {{$client->digito}}</td>
-                                                <td>{{$client->telefono}}</td>
+                                                <td>{{$client->telefono}} / {{$client->whatsapp}}</td>
                                                 <td>{{$client->email}}</td>
                                                 <td>{{$client->direccion}}</td>
                                                 <td>{{$client->user}}</td>      
@@ -208,6 +208,7 @@
         var digito_modal_editar = button.data('digito')
         var direccion_modal_editar = button.data('direccion')
         var telefono_modal_editar = button.data('telefono')
+        var whatsapp_modal_editar = button.data('whatsapp')
         var email_modal_editar = button.data('email')
         var id_cliente = button.data('id_cliente')
         var estado_civil = button.data('estado_civil')
@@ -223,6 +224,7 @@
         modal.find('.modal-body #digito').val(digito_modal_editar);
         modal.find('.modal-body #direccion').val(direccion_modal_editar);
         modal.find('.modal-body #telefono').val(telefono_modal_editar);
+        modal.find('.modal-body #whatsapp').val(whatsapp_modal_editar);
         modal.find('.modal-body #email').val(email_modal_editar);
         modal.find('.modal-body #id_cliente').val(id_cliente);
         modal.find('.modal-body #estado_civil').val(estado_civil);

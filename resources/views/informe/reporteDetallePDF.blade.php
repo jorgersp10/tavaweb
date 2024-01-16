@@ -376,7 +376,11 @@
                                     <td>Gs. {{number_format(($p->moratorio), 0, ",", ".")}}</td>
                                     <td>Gs. {{number_format(($p->punitorio), 0, ",", ".")}}</td>
                                     <td>Gs. {{number_format(($p->iva), 0, ",", ".")}}</td> -->
-                                    <td><strong>{{$p->fact_nro}}</strong></td> 
+                                    @if($p->contable == 1)
+                                        <td><strong>Fact N°: {{$p->inmueble_id}}</strong></td> 
+                                    @else
+                                        <td><strong>Rec N°: {{$p->nro_recibo}}</strong></td> 
+                                    @endif
                                     <td><strong>Gs. {{number_format(($p->total_fact), 0, ",", ".")}}</strong></td> 
                                     <td>Gs. {{number_format(($p->total_pagf), 0, ",", ".")}}</td>
                                     <td>Gs. {{number_format(($p->total_pagtd), 0, ",", ".")}}</td>
@@ -491,7 +495,7 @@
   </div><!--fin del div card body-->
   <footer>
     <hr>
-    <p><b>AyM INOX</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
+    <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>
     <p><b>{{date('d-m-Y H:i:s')}}</b></p>
   </footer>
 </html>

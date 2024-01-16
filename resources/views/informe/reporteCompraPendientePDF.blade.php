@@ -3,7 +3,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Reporte por IVA mensual</title>
+    <title>Compras Pendientes</title>
     
     <div class="card-body">
     <style> 
@@ -141,68 +141,7 @@
     </style>
    
     <header>
-        <h2 id="titulo" class="text-center">Ventas Facturadas rango de Fecha</h2>   
-
-    </header>
- 
-    @if(($date1 == null || $date2 == null))
-        <h3 >Rango de Fecha: Todas las fechas</h3>
-        @else
-        <h3>Rango de Fecha: {{ date('d-m-Y', strtotime($date1)) }} al {{ date('d-m-Y', strtotime($date2)) }}</h3>
-    @endif
-    @if($ventas=="Vacio")
-    <h4 >NO HUBO VENTAS</h4>
-    @else
-    ***************************************************************************
-    <section id="marco">
-        <div>
-            <table id="letratabla" class="table table-bordered table-striped table-sm">  
-            @php
-                $total_iva=0;
-                $total_venta=0;
-            @endphp
-            
-                <thead>  
-                    <tr> 
-                        <th>Cliente</th>
-                        <th>Fact. Nro</th>
-                        <th>Fecha</th>
-                        <th>Total Iva</th>
-                        <th>Total Factura</th>
-                    </tr>
-                </thead>
-            @foreach($ventas as $v)
-                <tbody>    
-                    <tr>       
-                        <td>{{$v->nombre}}</td>                             
-                        <td>{{$v->fact_nro}}</td>
-                        <td>{{ date('d-m-Y', strtotime($v->fecha)) }}</td>                             
-                        <td>Gs. {{number_format(($v->ivaTotal), 0, ",", ".")}}</td>
-                        <td>Gs. {{number_format(($v->total), 0, ",", ".")}}</td>                                                                     
-                    </tr>
-                @php
-                    $total_iva=$total_iva + $v->ivaTotal;
-                    $total_venta=$total_venta + $v->total;
-                @endphp
-                </tbody>
-            @endforeach       
-            @php
-                $total_iva_venta=$total_iva;
-            @endphp
-            <tr id="totales">       
-                <td >TOTALES</td>                             
-                <td></td>
-                <td></td>                             
-                <td>Gs. {{number_format(($total_iva_venta), 0, ",", ".")}}</td>
-                <td>Gs. {{number_format(($total_venta), 0, ",", ".")}}</td>                                                                     
-            </tr>   
-            </table>
-           
-        </div>
-    </section>  
-    @endif 
-     <header>
-        <h2 id="titulo" class="text-center">Compras por rango de Fecha</h2>   
+        <h2 id="titulo" class="text-center">Compras Pendientes de pago por Rango de Fecha</h2>   
 
     </header>
  
@@ -214,7 +153,7 @@
     @if($compras=="Vacio")
     <h4 >No posee compras</h4>
     @else
-    <h3 id="titulo" class="text-center">Factura de compra de materiales</h3>
+    <h3 id="titulo" class="text-center">Compras de materiales y servicios</h3>
     ***************************************************************************
     <section id="marco">
         <div>
@@ -262,9 +201,9 @@
     @endif 
 
     @if($gastos=="Vacio")
-    <h4 >No posee gastos con valor contable</h4>
+    <h4 >No posee gastos</h4>
     @else
-    <h3 id="titulo" class="text-center">Gastos Varios con valor contable</h3>
+    <h3 id="titulo" class="text-center">Gastos Varios</h3>
     ***************************************************************************
     <section id="marco">
         <div>
@@ -309,7 +248,58 @@
            
         </div>
     </section>  
-    @endif    
+    @endif 
+
+    <!-- //PAGO DE SALARIOS -->
+    @if($salarios=="Vacio")
+    {{-- <h4>No posee salarios</h4> --}}
+    @else
+    <h3 id="titulo" class="text-center">Pago de Salarios</h3>
+    ***************************************************************************
+    <section hidden id="marco">
+        <div>
+            <table id="letratabla" class="table table-bordered table-striped table-sm">  
+            @php
+                $total_iva_salario=0;
+                $total_salario=0;
+            @endphp
+            
+                <thead>  
+                    <tr> 
+                        <th>Funcionario</th>
+                        <th>Recibo. Nro</th>
+                        <th>Fecha</th>
+                        <th>Total Iva</th>
+                        <th>Total Pagado</th>
+                    </tr>
+                </thead>
+            @foreach($salarios as $com)
+                <tbody>    
+                    <tr>       
+                        <td>{{$com->nombre}}</td>                             
+                        <td>{{$com->nro_recibo}}</td>
+                        <td>{{ date('d-m-Y', strtotime($com->fecha_recibo)) }}</td>                             
+                        <td>Gs. 0</td>
+                        <td>Gs. {{number_format(($com->salario_cobrar), 0, ",", ".")}}</td>                                                                     
+                    </tr>
+                @php
+                    $total_iva_salario=$total_iva_salario;
+                    $total_salario=$total_salario + $com->salario_cobrar;
+                @endphp
+                </tbody>
+            @endforeach       
+            <tr id="totales">       
+                <td >TOTALES</td>                             
+                <td></td>
+                <td></td>                             
+                <td>Gs. {{number_format(($total_iva_salario), 0, ",", ".")}}</td>
+                <td>Gs. {{number_format(($total_salario), 0, ",", ".")}}</td>                                                                     
+            </tr>   
+            </table>
+           
+        </div>
+    </section>  
+    @endif 
 
     @if($gastos=="Vacio")
             @php
@@ -329,7 +319,7 @@
                 $total_salario=0;
             @endphp
     @endif
-    <h3 id="titulo" class="text-center">TOTAL IVA Y TOTAL GENERAL DE COMPRAS</h3>
+    <h3 id="titulo" class="text-center">TOTAL IVA Y TOTAL GENERAL</h3>
      <section id="marco">
         <div>
             <table id="letratabla" class="table table-bordered table-striped table-sm">  
@@ -353,34 +343,16 @@
                 @endphp
                 </tbody>    
             <tr id="totales">       
-                <td >TOTAL GENERAL IVA DE COMPRAS Y GASTOS</td>                             
+                <td >TOTAL GENERAL</td>                             
                 <td></td>
                 <td></td>                             
                 <td>Gs. {{number_format(($total_iva_gasto_g), 0, ",", ".")}}</td>
                 <td>Gs. {{number_format(($total_gasto_g), 0, ",", ".")}}</td>                                                                     
             </tr>   
-            <tr id="totales">       
-                <td >TOTALES GENERAL DE IVA DE VENTAS</td>                             
-                <td></td>
-                <td></td>                             
-                <td>Gs. {{number_format(($total_iva_venta), 0, ",", ".")}}</td>
-                <td>Gs. {{number_format(($total_venta), 0, ",", ".")}}</td>                                                                     
-            </tr> 
-            @php
-                $total_saldo_iva = $total_iva_gasto_g - $total_iva_venta;
-                $total_saldo = $total_gasto_g - $total_venta;
-            @endphp
-            <tr id="totales">       
-                <td >SALDO DE IVA</td>                             
-                <td></td>
-                <td></td>                             
-                <td>Gs. {{number_format(($total_saldo_iva), 0, ",", ".")}}</td>
-                <td>Gs. {{number_format(($total_saldo), 0, ",", ".")}}</td>                                                                     
-            </tr>
             </table>
            
         </div>
-    </section>
+    </section>  
   <footer>
     <hr>
     <p><b>LABPROF GROUP</b> <b>Usuario:</b> {{auth()->user()->name}}</p>

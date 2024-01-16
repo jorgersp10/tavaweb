@@ -146,6 +146,8 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('pagarCompra/{id}', [CompraController::class, 'pagarCompra'])->name('pagarCompra');
     Route::post('pagarFactCompra', [CompraController::class, 'pagarFactCompra'])->name('pagarFactCompra');
     Route::get('pagarFactura', [CompraController::class, 'pagarFactura'])->name('pagarFactura');
+    Route::get('reciboCompra/{id}', [CompraController::class, 'reciboCompra'])->name('reciboCompra');
+
 
     Route::post('cobrarCheque', [Cheque_emitidoController::class, 'cobrarCheque'])->name('cobrarCheque');
     Route::post('cobrarChequeR', [ChequeController::class, 'cobrarChequeR'])->name('cobrarChequeR');
@@ -173,7 +175,13 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('reporteDetalle', [InformeController::class, 'reporteDetalle'])->name('reporteDetalle');
     Route::post('reporteDetallePDF', [InformeController::class, 'reporteDetallePDF'])->name('reporteDetallePDF');
     Route::post('reporteVentaPDF', [InformeController::class, 'reporteVentaPDF'])->name('reporteVentaPDF');
+    Route::post('reporteVentaPendientePDF', [InformeController::class, 'reporteVentaPendientePDF'])->name('reporteVentaPendientePDF');
+
     Route::post('reporteCompraPDF', [InformeController::class, 'reporteCompraPDF'])->name('reporteCompraPDF');
+    Route::post('reporteCompraPendientePDF', [InformeController::class, 'reporteCompraPendientePDF'])->name('reporteCompraPendientePDF');
+    Route::post('reporteCompraCobradaPDF', [InformeController::class, 'reporteCompraCobradaPDF'])->name('reporteCompraCobradaPDF');
+
+
     Route::post('reporteProductoPDF', [InformeController::class, 'reporteProductoPDF'])->name('reporteProductoPDF');
     Route::post('reporteProductoGSPDF', [InformeController::class, 'reporteProductoGSPDF'])->name('reporteProductoGSPDF');
     Route::post('reporteCreditoPDF', [InformeController::class, 'reporteCreditoPDF'])->name('reporteCreditoPDF');

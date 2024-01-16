@@ -27,7 +27,7 @@ class ProveedorController extends Controller
             $sql = str_replace(" ", "%", $sql);
             $proveedores=DB::table('proveedores as p')
             ->select('p.id','p.nombre','p.ruc','p.telefono',
-            'p.direccion','p.email')
+            'p.direccion','p.email','p.whatsapp')
             ->where('p.nombre','LIKE','%'.$sql.'%')
             ->orwhere('p.ruc','LIKE','%'.$sql.'%')
             ->orderBy('p.id','desc')
@@ -81,6 +81,7 @@ class ProveedorController extends Controller
             $proveedor->nombre = strtoupper($request->nombre);
             $proveedor->ruc = $request->ruc;
             $proveedor->telefono = $request->telefono;
+            $proveedor->whatsapp = $request->whatsapp;
             $proveedor->direccion = strtoupper($request->direccion);
             $proveedor->email = $request->email;
             $proveedor->user_id = auth()->user()->id;
@@ -137,6 +138,7 @@ class ProveedorController extends Controller
         $proveedor->nombre = strtoupper($request->nombre);
         $proveedor->ruc = $request->ruc;
         $proveedor->telefono = $request->telefono;
+        $proveedor->whatsapp = $request->whatsapp;
         $proveedor->direccion = strtoupper($request->direccion);
         $proveedor->email = $request->email;
         $proveedor->user_id = auth()->user()->id;

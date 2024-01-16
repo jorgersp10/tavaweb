@@ -48,7 +48,27 @@
                                 <div class="mb-3">
                                     <input type="date" id="fecha" name="fecha" class="form-control" required>
                                 </div>
-                            </div>                                                      
+                            </div>   
+                            <div class="col-md-2">
+                                <label class="col-md-4 form-control-label" for="documento">TIPO FACT</label>
+                                
+                                <div class="mb-3">
+                                
+                                    <select class="form-control" name="tipo_fact" id="tipo_fact">                                                                        
+                                        <option disabled>Seleccione</option>
+                                        <option value="1">CRÉDITO</option>
+                                        <option value="0">CONTADO</option>
+
+                                    </select>
+                                
+                                </div>
+                            </div>   
+                            <div class="col-md-2">
+                                <label class="col-md-4 form-control-label" for="cantidad">N° PAGOS</label>
+                                <div class="mb-3">
+                                    <input type="number" id="cuota" name="cuota" class="form-control" placeholder="Ingrese cant. de pagos">
+                                </div>
+                            </div>                                                
                         </div>
                         <div class="form-group row">
                             <div class="col-md-4">
@@ -138,6 +158,12 @@
                                 </div>
                             </div>
                         </div><br>
+                        <div class="row mb-4">
+                            <label for="horizontal-firstname-input" class="col-sm-2 col-form-label">Descripción de Fact.</label>
+                            <div class="col-sm-9">
+                                <textarea id="descripcion_fact"  name="descripcion_fact" class="form-control" placeholder="Ingrese descripcion de la factura ..." required></textarea>    
+                            </div>
+                        </div>
                         <div class="form-group row border">
 
                             <h3>Lista de Compras a Proveedores</h3>
@@ -157,7 +183,9 @@
                                     <tfoot>                             
                                         <tr>
                                             <th  colspan="5"><p align="right">TOTAL:</p></th>
-                                            <th><p align="right"><span id="total_html">Gs. 0.00</span></th>
+                                            <th><p align="right"><span id="total_html">Gs. 0.00</span>
+                                                <input type="hidden" name="total" id="total"></th>
+                                                
                                         </tr>
 
                                         <tr>
@@ -181,8 +209,20 @@
                                         </tr>
 
                                         <tr>
+                                            <th colspan="5">
+                                                <p align="right">ENTREGA:</p>
+                                            </th>
+                                            <th>
+                                                <p align="right"><span align="right" id="entrega_html">Gs. 0.00</span>
+                                                    <input type="hidden" name="total_entrega" id="total_entrega">
+                                                </p>
+                                            </th>
+                                        </tr>
+
+                                        <tr>
                                             <th  colspan="5"><p align="right">TOTAL PAGAR:</p></th>
-                                            <th><p align="right"><span align="right" id="total_pagar_html">Gs. 0.00</span> <input type="hidden" name="total_pagar" id="total_pagar"></p></th>
+                                            <th><p align="right"><span align="right" id="total_pagar_html">Gs. 0.00</span> 
+                                            <input type="hidden" name="total_pagar" id="total_pagar"></p></th>
                                         </tr>  
                                     </tfoot>
                                     <tbody>
@@ -191,6 +231,28 @@
                             </div>
 
                             </div>
+                            <div class="form-group row mb-5">
+                                <div class="col-md-4">
+                                    <label class="col-md-5 form-control-label" for="precio_cuota">Descuento Gral</label>
+                                    <div class="mb-3">
+                                        <input type="text" id="entrega" name="entrega" value="0" class="form-control number2">
+                                    </div>
+                                </div> 
+                                <div class="col-md-3">
+                                    <label class="col-md-3 form-control-label" for="precio"></label>
+                                    <div class="mb-3">
+                                        <button type="button" id="agregar_entrega" class="btn btn-primary"><i
+                                                class="fa fa-plus fa-1x"></i> Aplicar Descuento Gral</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="col-md-3 form-control-label" for="precio"></label>
+                                    <div class="mb-3">
+                                        <button type="button" id="eliminar_entrega" class="btn btn-danger"><i
+                                                class="fa fa-trash fa-1x"></i> Eliminar Descuento Gral</button>
+                                    </div>
+                                </div>
+                            </div>    
 
                             <div class="modal-footer form-group row" id="guardar">
 
@@ -220,7 +282,7 @@
                       </div>
                       <div class="modal-body">
                           <form action="{{route('proveedor.store')}}" method="post" class="form-horizontal">
-                            <input type="text" id="desde_factura" name="desde_factura" value=1 class="form-control">
+                            <input type="hidden" id="desde_factura" name="desde_factura" value=1 class="form-control">
                               {{csrf_field()}}
                               
                               @include('proveedor.form')
@@ -293,6 +355,102 @@
 
     </script>
 
+<script>
+    $(document).ready(function(){
+        
+        $("#agregar_entrega").click(function(){
+   
+            agregar_entrega();
+        });
+   
+     });
+
+        function agregar_entrega(){
+            entrega= $("#entrega").val();
+            entrega = entrega.replaceAll(".","");
+            console.log("Descuento Gral = "+entrega);
+            total_total= $("#total").val();
+            console.log("TOTAL = "+total_total);
+            total_pagar_nuevo= total_total - entrega;
+            console.log("TOTAL NUEVO = "+total_pagar_nuevo);
+            //funcion para agregar separador de miles
+            var formatNumber = {
+                    separador: ".", // separador para los miles
+                    sepDecimal: ',', // separador para los decimales
+                    formatear:function (num){
+                    num +='';
+                    var splitStr = num.split('.');
+                    var splitLeft = splitStr[0];
+                    //var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+                    var regx = /(\d+)(\d{3})/;
+                    while (regx.test(splitLeft)) {
+                    splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+                    }
+                    return this.simbol + splitLeft;
+                    },
+                    new:function(num, simbol){
+                    this.simbol = simbol ||'';
+                    return this.formatear(num);
+                    }
+                }
+
+            $("#total_pagar_html").html("Gs. " + formatNumber.new(total_pagar_nuevo));
+            $("#total_pagar").val(total_pagar_nuevo);
+
+            $("#entrega_html").html("Gs. " + formatNumber.new(entrega));
+            $("#total_entrega").val(entrega);
+
+        }
+</script>
+
+<script>
+    $(document).ready(function(){
+        
+        $("#eliminar_entrega").click(function(){
+   
+            eliminar_entrega();
+        });
+   
+     });
+
+        function eliminar_entrega(){
+            entrega= $("#entrega").val();
+            entrega = entrega.replaceAll(".","");
+
+            total_total= $("#total").val();
+            //total_total = total_total.replaceAll(".","");           
+
+            //funcion para agregar separador de miles
+            var formatNumber = {
+                    separador: ".", // separador para los miles
+                    sepDecimal: ',', // separador para los decimales
+                    formatear:function (num){
+                    num +='';
+                    var splitStr = num.split('.');
+                    var splitLeft = splitStr[0];
+                    //var splitRight = splitStr.length > 1 ? this.sepDecimal + splitStr[1] : '';
+                    var regx = /(\d+)(\d{3})/;
+                    while (regx.test(splitLeft)) {
+                    splitLeft = splitLeft.replace(regx, '$1' + this.separador + '$2');
+                    }
+                    return this.simbol + splitLeft;
+                    },
+                    new:function(num, simbol){
+                    this.simbol = simbol ||'';
+                    return this.formatear(num);
+                    }
+                }
+
+            $("#total_pagar_html").html("Gs. " + formatNumber.new(total_total));
+            $("#total_pagar").val(total_total);
+
+            $("#entrega_html").html("Gs. " + 0);
+            $("#total_entrega").val(0);
+            $("#entrega").val(0);
+
+        }
+</script>
+
 <script type="text/javascript">
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
         $(document).ready(function(){
@@ -356,6 +514,9 @@
              precio_minimo= $("#precio_min").val();
              precio_maximo= $("#precio_max").val();
              iva=$("#iva").val();
+
+             entrega= $("#entrega").val();
+             entregaFinal = entrega.replaceAll(".","");
 
              if(parseFloat(stockpro) < parseFloat(cantidad)){
     
@@ -482,6 +643,7 @@
    
            $("#total_html").html("Gs. " + formatNumber.new(total));
            $("#total").html("Gs. " + total);
+           $("#total").val(total);  
            //IVA 10
            $("#total_iva_10_html").html("Gs. " + formatNumber.new(total_iva10));
            $("#total_iva_10").val(total_iva10);
@@ -496,8 +658,13 @@
            $("#total_exenta_html").html("Gs. " + formatNumber.new(total_exenta));
            $("#total_exenta").val(total_exenta);
 
-           $("#total_pagar_html").html("Gs. " + formatNumber.new(total));
-           $("#total_pagar").val(total);
+           $("#entrega_html").html("Gs. " + formatNumber.new(entregaFinal));
+           $("#total_entrega").val(entregaFinal);
+
+           total_pagar=total - entregaFinal;
+
+           $("#total_pagar_html").html("Gs. " + formatNumber.new(total_pagar));
+           $("#total_pagar").val(total_pagar);
 
            
            
@@ -569,6 +736,8 @@
 
            $("#total_pagar_html").html("Gs." + total_pagar_html);
            $("#total_pagar").val(total_pagar_html);
+           $("#entrega_html").html("Gs. " + 0);
+           $("#total_entrega").val(0);
           
            $("#fila" + index).remove();
            evaluar();
@@ -625,6 +794,20 @@
         
     }
 
+</script>
+
+<script>
+    $(document).ready(function(){
+   
+        $("#tipo_fact").change( function() {
+            if ($(this).val() === "0") {
+                $("#cuota").prop("readonly", true);
+            } else {
+                $("#cuota").prop("readonly", false);
+            }
+        });
+        
+     });
 </script>
 
     <!-- Plugins js -->

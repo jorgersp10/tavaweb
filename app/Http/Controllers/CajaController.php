@@ -14,6 +14,7 @@ use App\Models\Tipo_acuerdo;
 use App\Models\Cuota;
 use App\Models\Cuota_det;
 use App\Models\Pago;
+use App\Models\Venta;
 use App\Models\Pago_Trn;
 use App\Models\Recibo_Param;
 use App\Models\Factura;
@@ -198,7 +199,25 @@ class CajaController extends Controller
             // Sumamos todas las fuentes de Ingreso a la variable ingreso
             //$ingreso=($request->total_pagadof+$request->total_pagadoch+$request->total_pagadotc+$request->total_pagadotd+$request->total_pagadotr)- $request->total_vuelto;
             $ingreso=(str_replace(".","",$request->total_pagadof)+str_replace(".","",$request->total_pagadoch)+str_replace(".","",$request->total_pagadotc)+str_replace(".","",$request->total_pagadotd)+str_replace(".","",$request->total_pagadotr))- $request->total_vuelto;
-             
+            //dd($ingreso);
+            $venta_id = DB::select('select factura_id from cuotas where id = ? ',[$request->id_cuota]);
+            //dd($ingreso);
+            //CAMBIAMOS EL ESTADO DE LA VENTA
+
+            $venta_id = $venta_id[0]->factura_id;           
+            $ventaMonto=Venta::findOrfail($venta_id);
+            
+            if($ingreso >= $ventaMonto->total)
+            {
+                $ventaMonto->estado_pago = "C";
+            }
+            else
+            {
+                $ventaMonto->estado_pago = "P";
+            }
+            //dd($ventaMonto->estado_pago);
+            $ventaMonto->update();
+
             $pcc=0; //Primera cuota cobrada
             $ucc=0; //Ultima cuota cobrada
             $regpag=0; //Para Registrar Pagos en la primera linea solamente
@@ -493,7 +512,9 @@ class CajaController extends Controller
                         $fac_det2->save();
                     }
             }
-           
+        
+       
+        
         DB::commit();
             ///////////////////////////////////////////////////
             //Datos descripción del recibo

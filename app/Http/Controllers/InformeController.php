@@ -346,7 +346,8 @@ class InformeController extends Controller
             ->select('v.fact_nro as inmueble_id', 'u.name', 'p.fec_pag as fechapago', 'p.cuota as cuota_nro', 'p.cuota_id as cuota_id',
                 'p.cuota', 'p.capital as capital', 'p.moratorio', 'p.punitorio', 'p.iva', 'p.total_pag as totalpagado',
                 'p.fec_vto', 'u.id as user_id', 'cli.nombre as nombreCliente', 'cli.num_documento','cli.digito', 'total_pagch',
-                'total_pagtd', 'total_pagtc', 'total_pagtr', 'total_pagf', 'v.fact_nro', 'v.total as total_fact');
+                'total_pagtd', 'total_pagtc', 'total_pagtr', 'total_pagf', 'v.fact_nro', 'v.total as total_fact',
+            'v.contable','v.nro_recibo');
 
         //VERIFICA SI TRAE CLIENTE
         if (empty($request->cliente_id)) {
@@ -380,7 +381,7 @@ class InformeController extends Controller
         }
         //dd($pagos);
         $moneda = "GS";
-        return $pdf = \PDF::loadView('informe.reporteDetallePDF', ["date1" => $date1, "date2" => $date2,
+        return $pdf = \PDF::loadView('informe.reporteVentaCobradaPDF', ["date1" => $date1, "date2" => $date2,
             "moneda" => $moneda, "cliente" => $cliente, "pagos" => $pagos])
             ->setPaper('a4', 'landscape')
             ->stream('reporteDetallePDF.pdf');
@@ -398,7 +399,7 @@ class InformeController extends Controller
         $ventas = DB::table('ventas as v')
             ->join('clientes as c', 'c.id', '=', 'v.cliente_id')
             ->select('v.id', 'v.fact_nro', 'v.iva5', 'v.iva10', 'v.ivaTotal', 'v.exenta', 'v.fecha',
-                'v.total', 'v.estado', 'c.nombre')
+                'v.total', 'v.estado', 'c.nombre','v.contable','v.nro_recibo')
             ->where('v.estado', '=', "0");
 
         if ($date1 == null && $date2 == null) {
@@ -428,6 +429,49 @@ class InformeController extends Controller
             ->stream('reporteDetallePDF.pdf');
     }
 
+    public function reporteVentaPendientePDF(Request $request)
+    {
+        //dd($request);
+        $date1 = $request->fecha1;
+        $date2 = $request->fecha2;
+        //$producto=$request->producto_id;
+        //dd($request);
+        //Consulta de Inmuebles
+
+        $ventas = DB::table('ventas as v')
+            ->join('clientes as c', 'c.id', '=', 'v.cliente_id')
+            ->leftjoin('pagos as p', 'v.id', '=', 'p.factura_id')
+            ->select('v.id', 'v.fact_nro', 'v.iva5', 'v.iva10', 'v.ivaTotal', 'v.exenta', 'v.fecha',
+                'v.total', 'v.estado', 'c.nombre','v.contable','v.nro_recibo')
+            ->where('v.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $ventas = $ventas->orderBy('v.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $ventas = $ventas->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $ventas = $ventas->whereBetween('v.fecha', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $ventas = $ventas->orderBy('v.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $ventas = $ventas->get();
+
+        }
+
+        if ($ventas->isEmpty()) {
+            $ventas = "Vacio";
+        }
+        //dd($ventas);
+        $moneda = "GS";
+        return $pdf = \PDF::loadView('informe.reporteVentaPendientePDF', ["date1" => $date1, "date2" => $date2,
+            "ventas" => $ventas])
+            ->setPaper('a4', 'landscape')
+            ->stream('reporteDetallePDF.pdf');
+    }
+
     public function reporteCompraPDF(Request $request)
     {
         //dd($request);
@@ -439,7 +483,7 @@ class InformeController extends Controller
 
         $compras = DB::table('compras as com')
             ->join('proveedores as p', 'p.id', '=', 'com.proveedor_id')
-            ->select('com.id', 'com.fact_compra', 'com.iva', 'com.fecha',
+            ->select('com.id', 'com.fact_compra', 'com.ivaTotal as iva', 'com.fecha',
                 'com.total', 'com.estado', 'p.nombre')
             ->where('com.estado', '=', "0");
 
@@ -521,6 +565,204 @@ class InformeController extends Controller
         $moneda = "GS";
         return $pdf = \PDF::loadView('informe.reporteCompraPDF', ["date1" => $date1, "date2" => $date2,
             "compras" => $compras,"gastos" => $gastos,"salarios" => $salarios])
+            ->setPaper('a4', 'landscape')
+            ->stream('reporteDetallePDF.pdf');
+    }
+
+    public function reporteCompraPendientePDF(Request $request)
+    {
+        //dd($request);
+        $date1 = $request->fecha1;
+        $date2 = $request->fecha2;
+        //$producto=$request->producto_id;
+        //dd($request);
+        //Consulta de Inmuebles
+
+        $compras = DB::table('compras as com')
+            ->join('proveedores as p', 'p.id', '=', 'com.proveedor_id')
+            ->select('com.id', 'com.fact_compra', 'com.ivaTotal as iva', 'com.fecha',
+                'com.total', 'com.estado', 'p.nombre')
+            ->where('com.estado', '=', "0")
+            ->where('com.estado_pago', '=', "P");
+
+        if ($date1 == null && $date2 == null) {
+
+            $compras = $compras->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $compras = $compras->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $compras = $compras->whereBetween('com.fecha', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $compras = $compras->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $compras = $compras->get();
+
+        }
+
+        if ($compras->isEmpty()) {
+            $compras = "Vacio";
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+
+        $gastos = DB::table('gastos as com')
+            ->join('proveedores as p', 'p.id', '=', 'com.proveedor_id')
+            ->select('com.id', 'com.fact_compra', 'com.iva', 'com.fecha',
+                'com.total', 'com.estado', 'p.nombre')
+            ->where('com.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $gastos = $gastos->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $gastos = $gastos->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $gastos = $gastos->whereBetween('com.fecha', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $gastos = $gastos->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $gastos = $gastos->get();
+
+        }
+
+        if ($gastos->isEmpty()) {
+            $gastos = "Vacio";
+        }
+
+        //PAGO DE SALARIOS
+        $salarios = DB::table('recibo_funcionarios as s')
+        ->join('funcionarios as f', 'f.id', '=', 's.funcionario_id')
+        ->select('s.id', 's.nro_recibo', 's.salario_cobrar', 's.fecha_recibo',
+        'f.nombre');
+        //->where('com.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $salarios = $salarios->orderBy('s.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $salarios = $salarios->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $salarios = $salarios->whereBetween('s.fecha_recibo', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $salarios = $salarios->orderBy('s.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $salarios = $salarios->get();
+
+        }
+
+        if ($salarios->isEmpty()) {
+            $salarios = "Vacio";
+        }
+        //dd($salarios);
+        $moneda = "GS";
+        return $pdf = \PDF::loadView('informe.reporteCompraPendientePDF', ["date1" => $date1, "date2" => $date2,
+            "compras" => $compras,"gastos" => $gastos,"salarios" => $salarios])
+            ->setPaper('a4', 'landscape')
+            ->stream('reporteDetallePDF.pdf');
+    }
+
+    public function reporteCompraCobradaPDF(Request $request)
+    {
+        //dd($request);
+        $date1 = $request->fecha1;
+        $date2 = $request->fecha2;
+        //$producto=$request->producto_id;
+        //dd($request);
+        //Consulta de Inmuebles
+
+        $pagos_compra = DB::table('pagos_compra as pc')
+            ->join('compras as com', 'com.id', '=', 'pc.factura_id')
+            ->join('proveedores as p', 'p.id', '=', 'com.proveedor_id')
+            ->select('com.id', 'com.fact_compra', 'com.ivaTotal as iva', 'pc.fec_pag',
+                'com.total', 'com.estado', 'p.nombre','pc.nro_pago','pc.nro_recibo',
+                'pc.total_pag','pc.pago_est','pc.id',
+                'total_pagch','total_pagtd', 'total_pagtc', 'total_pagtr', 'total_pagf')
+            ->where('com.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $pagos_compra = $pagos_compra->orderBy('pc.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $pagos_compra = $pagos_compra->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $pagos_compra = $pagos_compra->whereBetween('pc.fec_pag', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $pagos_compra = $pagos_compra->orderBy('pc.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $pagos_compra = $pagos_compra->get();
+
+        }
+
+        if ($pagos_compra->isEmpty()) {
+            $pagos_compra = "Vacio";
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+
+        $gastos = DB::table('gastos as com')
+            ->join('proveedores as p', 'p.id', '=', 'com.proveedor_id')
+            ->select('com.id', 'com.fact_compra', 'com.iva', 'com.fecha',
+                'com.total', 'com.estado', 'p.nombre')
+            ->where('com.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $gastos = $gastos->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $gastos = $gastos->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $gastos = $gastos->whereBetween('com.fecha', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $gastos = $gastos->orderBy('com.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $gastos = $gastos->get();
+
+        }
+
+        if ($gastos->isEmpty()) {
+            $gastos = "Vacio";
+        }
+
+        //PAGO DE SALARIOS
+        $salarios = DB::table('recibo_funcionarios as s')
+        ->join('funcionarios as f', 'f.id', '=', 's.funcionario_id')
+        ->select('s.id', 's.nro_recibo', 's.salario_cobrar', 's.fecha_recibo',
+        'f.nombre');
+        //->where('com.estado', '=', "0");
+
+        if ($date1 == null && $date2 == null) {
+
+            $salarios = $salarios->orderBy('s.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $salarios = $salarios->get();
+            //dd($pagos);->groupby('a.id')
+
+        } else {
+            $salarios = $salarios->whereBetween('s.fecha_recibo', [($date1), ($date2)]);
+            //$pagos=$pagos->orderBy('c.cliente_id','asc');
+            $salarios = $salarios->orderBy('s.id', 'asc');
+            //$pagos=$pagos->orderBy('p.fec_pag','asc');
+            $salarios = $salarios->get();
+
+        }
+
+        if ($salarios->isEmpty()) {
+            $salarios = "Vacio";
+        }
+        //dd($salarios);
+        $moneda = "GS";
+        return $pdf = \PDF::loadView('informe.reporteCompraCobradaPDF', ["date1" => $date1, "date2" => $date2,
+            "pagos_compra" => $pagos_compra,"gastos" => $gastos,"salarios" => $salarios])
             ->setPaper('a4', 'landscape')
             ->stream('reporteDetallePDF.pdf');
     }
