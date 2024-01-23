@@ -268,7 +268,7 @@ class CompraController extends Controller
         $pagos=DB::table('pagos_compra as pc')
         //->join('compras as c','c.id','=','pc.factura_id')
         ->select('pc.factura_id','pc.total_pag','pc.total_pagf','pc.total_pagtr','pc.total_pagch'
-        ,'pc.total_pagtd','pc.total_pagtc','pc.fec_pag','pc.nro_pago','nro_recibo','pc.id as recibo_id')
+        ,'pc.total_pagtd','pc.total_pagtc','pc.fec_pag','pc.nro_pago','pc.nro_recibo','pc.id as recibo_id')
         ->where('pc.factura_id','=',$id)
         ->orderBy('pc.id','asc')
         ->get();
