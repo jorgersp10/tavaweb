@@ -125,7 +125,7 @@
                     
                         <strong>Fecha:</strong> {{date('d-m-Y')}}<br>
                         <strong>Usuario:</strong> {{auth()->user()->name}}<br> 
-                        <strong>PAGO N°:</strong> {{$compras->nro_pago}}/{{$compras->cuota}}<br>
+                        {{-- <strong>PAGO N°:</strong> {{$compras->nro_pago}}/{{$compras->cuota}}<br> --}}
                 </div>
         </div></br>
         
@@ -163,7 +163,11 @@
                 <tbody>
                         <tr>
                             <td style="text-align:center;" style="width:1%">{{$det->fact_compra}}</td>
-                            <td id="desc" style="width:20%">{{$det->nro_pago}} / {{$det->cuota}}</td>                    
+                            @if($det->cuota == 0)
+                            <td id="desc" style="width:20%">{{$det->nro_pago}} / 1</td> 
+                            @else
+                            <td id="desc" style="width:20%">{{$det->nro_pago}} / {{$det->cuota}}</td>  
+                            @endif                      
                             <td id="exe" style="text-align:center;width:12%">{{number_format(($det->capital_pagado), 0, ",", ".")}}</td>
                         </tr>                              
                     
@@ -225,7 +229,7 @@
                     
                         <strong>Fecha:</strong> {{date('d-m-Y')}}<br>
                         <strong>Usuario:</strong> {{auth()->user()->name}}<br> 
-                        <strong>PAGO N°:</strong> {{$compras->nro_pago}}/{{$compras->cuota}}<br>
+                        {{-- <strong>PAGO N°:</strong> {{$compras->nro_pago}}/{{$compras->cuota}}<br> --}}
                 </div>
         </div></br>
         
@@ -263,7 +267,11 @@
                 <tbody>
                         <tr>
                             <td style="text-align:center;" style="width:1%">{{$det->fact_compra}}</td>
-                            <td id="desc" style="width:20%">{{$det->nro_pago}} / {{$det->cuota}}</td>                    
+                            @if($det->cuota == 0)
+                            <td id="desc" style="width:20%">{{$det->nro_pago}} / 1</td> 
+                            @else
+                            <td id="desc" style="width:20%">{{$det->nro_pago}} / {{$det->cuota}}</td>  
+                            @endif                  
                             <td id="exe" style="text-align:center;width:12%">{{number_format(($det->capital_pagado), 0, ",", ".")}}</td>
                         </tr>                              
                     
