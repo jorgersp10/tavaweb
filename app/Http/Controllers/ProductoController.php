@@ -193,6 +193,7 @@ class ProductoController extends Controller
         $producto->comentarios = strtoupper($request->comentarios);
         $producto->user_mod = auth()->user()->id;
         $producto->tipo_producto = $request->tipo_producto;
+        $producto->veri_stock = $request->veri_stock;
         //dd($producto);
         $producto->update();
         return Redirect::to("producto")->with('msj2', 'PRODUCTO ACTUALIZADO');
@@ -205,7 +206,8 @@ class ProductoController extends Controller
         //$producto=Producto::join('categorias','productos.categoria_id','=','categorias.id')
         ->select('productos.id','productos.descripcion','productos.ArtCode','productos.stock'
         ,'productos.precio_compra','productos.precio_venta','productos.precio_min',
-        'productos.precio_max','productos.comentarios','productos.iva_id','productos.tipo_producto')
+        'productos.precio_max','productos.comentarios','productos.iva_id','productos.tipo_producto',
+        'productos.veri_stock')
         ->where('productos.id','=',$id)
         ->orderBy('productos.descripcion','desc')->first();
 

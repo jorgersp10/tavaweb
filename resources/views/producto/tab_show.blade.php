@@ -66,7 +66,7 @@
         @if($producto->tipo_producto == 0)
             <div class="row mb-4">
                 <label for="horizontal-firstname-input" class="col-sm-2 col-form-label">Tipo Producto</label>
-                <div class="col-sm-5">
+                <div class="col-sm-2">
                     <select class="form-control" name="tipo_producto" id="tipo_producto">                                                    
                         <option disabled>Seleccione</option>
                         <option value="0">Producto</option>
@@ -77,7 +77,7 @@
         @else
             <div class="row mb-4">
                 <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Tipo Producto</label>
-                <div class="col-sm-5">
+                <div class="col-sm-2">
                     <select class="form-control" name="tipo_producto" id="tipo_producto">                                                    
                         <option disabled>Seleccione</option>
                         <option value="1">Servicio</option>
@@ -86,6 +86,30 @@
                 </div>
             </div>
         @endif
+
+        @if($producto->veri_stock == 0)
+        <div class="row mb-4">
+            <label for="horizontal-firstname-input" class="col-sm-2 col-form-label">Verifica Stock</label>
+            <div class="col-sm-1">
+                <select class="form-control" name="veri_stock" id="veri_stock">                                                    
+                    <option disabled>Seleccione</option>
+                    <option value="0">SI</option>
+                    <option value="1">NO</option>
+                </select>
+            </div>
+        </div>
+        @else
+        <div class="row mb-4">
+            <label for="horizontal-firstname-input" class="col-sm-3 col-form-label">Verifica Stock</label>
+            <div class="col-sm-1">
+                <select class="form-control" name="veri_stock" id="veri_stock">                                                    
+                    <option disabled>Seleccione</option>
+                    <option value="1">NO</option>
+                    <option value="0">SI</option>                        
+                </select>
+            </div>
+        </div>
+    @endif
 
         <!-- <div class="row mb-4">
             <label class="col-sm-2 form-control-label" for="documento">Categoria</label>

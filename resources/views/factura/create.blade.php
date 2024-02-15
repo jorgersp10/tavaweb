@@ -146,7 +146,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <input readonly type="hidden" id="tipo_producto" name="tipo_producto" class="form-control">
+                                    <input readonly id="veri_stock" name="veri_stock" class="form-control">
                                 </div>
                             </div>
                             <!-- <div class="col-md-3"> 
@@ -412,8 +412,8 @@
              precio_minimo= $("#precio_min").val();
              precio_maximo= $("#precio_max").val();
              iva=$("#iva").val();
-             tipo_producto=$("#tipo_producto").val();
-             if(tipo_producto == 0)
+             veri_stock=$("#veri_stock").val();
+             if(veri_stock == 0)
              {
                 if(parseFloat(stockpro) < parseFloat(cantidad)){
     
@@ -914,7 +914,7 @@
                     document.getElementById("precio_min").value = formatNumber.new(data.var[0].precio_min);
                     document.getElementById("precio_max").value = formatNumber.new(data.var[0].precio_max);
                     document.getElementById("stock").value = data.var[0].stock;
-                    document.getElementById("tipo_producto").value = (data.var[0].tipo_producto);
+                    document.getElementById("veri_stock").value = (data.var[0].veri_stock);
                     document.getElementById("iva").value = data.var[0].iva;
                     
                 }
