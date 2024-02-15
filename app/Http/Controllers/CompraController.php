@@ -287,6 +287,20 @@ class CompraController extends Controller
         return view('compra.show',['compras' => $compras,'detalles' =>$detalles,
         'pagos' =>$pagos,'empresa_id' =>$empresa_id,'empresas' =>$empresas]);
     }
+
+    public function pagos_compra()
+    {
+        $pagos=DB::table('pagos_compra as pc')
+        ->join('compras as c','c.id','=','pc.factura_id')
+        ->join('proveedores as p','p.id','=','c.proveedor_id')
+        ->select('p.nombre','pc.id','pc.factura_id','c.total','pc.total_pag','pc.total_pagf','pc.total_pagtr','pc.total_pagch'
+        ,'pc.total_pagtd','pc.total_pagtc','pc.saldo',
+        'pc.fec_pag','pc.nro_pago','pc.nro_recibo','pc.id as recibo_id','c.fact_compra')
+        ->orderBy('pc.id','desc')
+        ->simplepaginate(30);
+        
+        return view('pago_compra.index',['pagos' =>$pagos]);
+    }
     
     public function edit(Request $request){
 
@@ -483,7 +497,8 @@ class CompraController extends Controller
                 $diferencia = ($request->saldo) - $ingreso;
                 $pago_compra->capital = $ingreso;
                 $pago_compra->total_pag = $ingreso;
-      
+                
+
                 if ($diferencia<=0){
                     $pago_compra->pago_est = "C";
                     $item = Compra::findOrFail($request->id_factura);
@@ -493,6 +508,7 @@ class CompraController extends Controller
                 else
                 {
                     $pago_compra->pago_est = "P";
+                    $pago_compra->saldo = $diferencia;
                 }
                 $pago_compra->fec_pag = $now;
                 $pago_compra->usuario_id = auth()->user()->id;
@@ -607,6 +623,35 @@ class CompraController extends Controller
         'diafecha' =>$diafecha,'mesLetra' =>$mesLetra,'agefecha' =>$agefecha,'tot_pag_let' =>$tot_pag_let])
          ->setPaper([0, 0, 702.2835, 1150.087], 'portrait')
          ->stream('FactCompra'.$id.'.pdf');
+    }
+
+    public function destroy_pago(Request $request)
+    {
+         try{
+
+            DB::beginTransaction();
+
+            $pago = Pago_compra::findOrFail($request->id);
+
+            $compras = DB::table('compras as c')
+            ->select('*')
+            ->where('c.id', '=', $pago->factura_id)
+            ->first();
+            
+            $cambio_estado = Compra::findOrFail($compras->id);
+            $cambio_estado->estado_pago = "P";
+            $cambio_estado->update();
+           
+            Pago_compra::destroy($request->id);          
+
+            DB::commit();
+
+        } catch(Exception $e){
+            
+            DB::rollBack();
+        }
+
+        return Redirect::to('pagos_compra')->with('msj', 'PAGO ELIMINADO');
     }
 
 }

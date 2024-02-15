@@ -147,6 +147,9 @@ Route::group(['middleware' => ['auth']], function () {
     Route::post('pagarFactCompra', [CompraController::class, 'pagarFactCompra'])->name('pagarFactCompra');
     Route::get('pagarFactura', [CompraController::class, 'pagarFactura'])->name('pagarFactura');
     Route::get('reciboCompra/{id}', [CompraController::class, 'reciboCompra'])->name('reciboCompra');
+    Route::get('pagos_compra', [CompraController::class, 'pagos_compra'])->name('pagos_compra');
+    Route::post('destroy_pago', [CompraController::class, 'destroy_pago'])->name('destroy_pago');
+
 
 
     Route::post('cobrarCheque', [Cheque_emitidoController::class, 'cobrarCheque'])->name('cobrarCheque');

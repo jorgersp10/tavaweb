@@ -127,6 +127,12 @@
                                 {{csrf_field()}} 
                                 </form> 
                         </li>
+                        <li><a class="waves-effect"  href="{{url('pagos_compra')}}" onclick="event.preventDefault(); document.getElementById('pagos_compra-form').submit();">    
+                            <span>Pagos por Compras</span></a>
+                            <form id="pagos_compra-form" action="{{url('pagos_compra')}}" method="GET" style="display: none;">
+                                {{csrf_field()}} 
+                            </form> 
+                        </li>
                         <li><a class="waves-effect"  href="{{url('proveedor')}}" onclick="event.preventDefault(); document.getElementById('proveedor-form').submit();">    
                             <span>Proveedores</span></a>
                             <form id="proveedor-form" action="{{url('proveedor')}}" method="GET" style="display: none;">
