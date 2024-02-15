@@ -40,6 +40,21 @@
                                     </div>
                                 </div>
                                 <!-- SUCURSALES -->
+                                <div class="row mb-2">
+                                    <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Cliente</label>
+                                    <div class="col-md-4">
+                                        <div class="mb-3">
+
+                                            <select class="form-control" name="cliente_id" id="cliente_id" style= "width:430px">
+
+                                                <option value="0" disabled>Seleccionar Cliente</option>
+
+                                            </select>
+
+                                        </div>
+                                    </div>
+
+                                </div>
                                 <div>
                                     <button type="submit" class="btn btn-danger float-left"><i class="fa fa-file fa-1x"></i> Generar PDF</button>
                                 </div>
@@ -83,18 +98,6 @@
 
                                         </div>
                                     </div>
-                                    <!-- <label for="horizontal-firstname-input" class="col-sm-1 col-form-label">Producto</label>
-                                    <div class="col-md-4">
-                                        <div class="mb-3">
-
-                                            <select class="form-control" name="producto_id" id="producto_id" style= "width:330px">
-
-                                                <option value="0" disabled>Seleccionar Producto</option>
-
-                                            </select>
-
-                                        </div>
-                                    </div> -->
 
                                 </div>
                                 <div>
@@ -336,31 +339,33 @@
 @section('script')
 
 <script type="text/javascript">
-        var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
-        $(document).ready(function(){
-            $('#cliente_id').select2({
-                ajax:{
-                    url:"{{route('getClienteInforme') }}",
-                    type: 'post',
-                    dataType: 'json',
-                    delay: 200,
-                    data: function(params){
-                        return{
-                            _token: CSRF_TOKEN,
-                            search:params.term
-                        }
-                    },
-                    processResults: function(response){
-                        return{
-                            results: response
-                        }
-                    },
-                    cache: true
-                }
-            });
+    var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');
+    $(document).ready(function(){
+        $('#cliente_id').select2({
+            placeholder: "Selecccione Cliente",
+            allowClear: true,
+            ajax:{
+                url:"{{ route('getClienteInforme') }}",
+                type: 'post',
+                dataType: 'json',
+                delay: 200,
+                data: function(params){
+                    return{
+                        _token: CSRF_TOKEN,
+                        search:params.term
+                    }
+                },
+                processResults: function(response){
+                    return{
+                        results: response
+                    }
+                },
+                cache: true
+            }
         });
+    });
+</script>
 
-    </script>
 
 <script type="text/javascript">
         var CSRF_TOKEN = $('meta[name="csrf-token"]').attr('content');

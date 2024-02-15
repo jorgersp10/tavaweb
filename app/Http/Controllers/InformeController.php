@@ -392,15 +392,22 @@ class InformeController extends Controller
         //dd($request);
         $date1 = $request->fecha1;
         $date2 = $request->fecha2;
-        //$producto=$request->producto_id;
-        //dd($request);
-        //Consulta de Inmuebles
+        
 
         $ventas = DB::table('ventas as v')
             ->join('clientes as c', 'c.id', '=', 'v.cliente_id')
             ->select('v.id', 'v.fact_nro', 'v.iva5', 'v.iva10', 'v.ivaTotal', 'v.exenta', 'v.fecha',
-                'v.total', 'v.estado', 'c.nombre','v.contable','v.nro_recibo')
+                'v.total', 'v.estado', 'c.nombre','v.contable','v.nro_recibo','v.estado_pago')
             ->where('v.estado', '=', "0");
+
+        if (empty($request->cliente_id)) {
+            $cliente = null;
+        } else {
+            $cliente = $request->cliente_id;
+            $ventas = $ventas->where('v.cliente_id', '=', $request->cliente_id);
+
+        }
+        
 
         if ($date1 == null && $date2 == null) {
 
