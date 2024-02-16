@@ -146,7 +146,7 @@
                             </div>
                             <div class="col-md-3">
                                 <div class="mb-3">
-                                    <input readonly id="veri_stock" name="veri_stock" class="form-control">
+                                    <input readonly type="hidden" id="veri_stock" name="veri_stock" class="form-control">
                                 </div>
                             </div>
                             <!-- <div class="col-md-3"> 
